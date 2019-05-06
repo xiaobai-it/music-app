@@ -29,7 +29,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-import {mapActions} from 'vuex'
+import {mapActions, mapState} from 'vuex'
 
 import SongList from '../../components/song-list/song-list'
 import Scroll from '../../components/scroll/scroll'
@@ -72,7 +72,8 @@ export default {
   computed: {
     bgStyle() {
       return `background-image :url("${this.bgImg}")`
-    }
+    },
+    ...mapState(['playList'])
   },
   methods: {
     ...mapActions(['clickOneSongShowPlay', 'clickRandomPlaySongs']),
@@ -116,6 +117,13 @@ export default {
         this.$refs.bgImgs.style.transform = `scale(${scale})`
         this.$refs.bgImgs.style.zIndex = 20
       }
+    },
+    // 监视playList歌曲数组的变化，如果数组长度大于0，让其最外面的div的bottom为60，解决迷你播放器和页面的自适应
+    playList () {
+      // scroll滚动没有反应，妈的什么情况
+      const bottom = this.playList.length > 0 ? '60px' : ''
+      this.$refs.list.$el.style.bottom = bottom
+      this.$refs.list.refresh()
     }
   }
 }

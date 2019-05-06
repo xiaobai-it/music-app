@@ -1,5 +1,5 @@
 <template>
-  <div class="recommend">
+  <div class="recommend" ref="recommend">
     <!--推荐页面-->
     <Scroll :data="GeDanData" class="recommend-content" ref="lunboDiv">
       <div>
@@ -45,6 +45,7 @@ import {swiper, swiperSlide} from 'vue-awesome-swiper'
 import {getRecommend, getHotGeDan} from '../../api/allAPI'
 import Scroll from '../../components/scroll/scroll'
 import Loading from '../../components/loading/loading'
+import {mapState} from 'vuex'
 
 export default {
   components: {
@@ -71,7 +72,8 @@ export default {
   computed: {
     swiper() {
       return this.$refs.mySwiper.swiper
-    }
+    },
+    ...mapState(['playList'])
   },
   mounted() {
     // 获取轮播图的图片
@@ -99,11 +101,24 @@ export default {
       window.location.href = linkUrl
     },
     loadImg() {
-      // 轮播图片加载完成的时候，让滚动重新刷新，保证，可以滚动到最底部
+      // 轮播图片加载完成的时候，让滚动重新刷新，保证可以滚动到最底部
       if (!this.lunboimgloadfinish) {
         this.$refs.lunboDiv.refresh()
         this.lunboimgloadfinish = true
       }
+    }
+  },
+  watch: {
+    // 监视playList歌曲数组的变化，如果数组长度大于0，让其最外面的div的bottom为60，解决迷你播放器和页面的自适应
+    playList () {
+      // scroll滚动没有反应，妈的什么情况，应该是swiper 和scroll 的冲突问题，待处理？？？？？？
+      const bottom = this.playList.length > 0 ? '60px' : ''
+      // if (!this.lunboimgloadfinish) {
+      //   this.$refs.lunboDiv.refresh()
+      //   this.lunboimgloadfinish = true
+      // }
+      this.$refs.lunboDiv.refresh()
+      this.$refs.recommend.style.bottom = bottom
     }
   }
 }

@@ -1,14 +1,14 @@
 <template>
   <div class="singer" ref="singer">
     <!--歌手页面-->
-    <Listview :singerList="singerList" @goToDetail="goToDetail"/>
+    <Listview :singerList="singerList" @goToDetail="goToDetail" ref="listviewzujian"/>
     <!--展示歌手详情页面-->
     <router-view/>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-import {mapActions} from 'vuex'
+import {mapActions, mapState} from 'vuex'
 
 import {getSingerList} from '../../api/allAPI'
 import Listview from '../../components/listview/listview'
@@ -87,6 +87,18 @@ export default {
     goToDetail(singerItem) {
       this.$router.push(`/singer/detail/${singerItem.id}`)
       this.setSinger(singerItem)
+    }
+  },
+  computed: {
+    ...mapState(['playList'])
+  },
+  watch: {
+    // 监视playList歌曲数组的变化，如果数组长度大于0，让其最外面的div的bottom为60，解决迷你播放器和页面的自适应
+    playList () {
+      // scroll滚动没有反应，妈的什么情况
+      const bottom = this.playList.length > 0 ? '60px' : ''
+      this.$refs.singer.style.bottom = bottom
+      this.$refs.listviewzujian.listViewRefresh()
     }
   }
 }

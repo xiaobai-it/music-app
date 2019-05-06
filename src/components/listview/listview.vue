@@ -81,6 +81,10 @@ export default {
   mounted() {
   },
   methods: {
+    // 解决迷你播放器和页面的自适应,singer组件调用了该方法
+    listViewRefresh () {
+      this.$refs.listview.refresh()
+    },
     // 实现点击右侧字母，主页面滚动到对应的位置,也就是点击事件
     rightTouchStart(even) {
       // 得到父元素的索引值
