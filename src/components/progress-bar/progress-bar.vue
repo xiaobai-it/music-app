@@ -70,6 +70,7 @@ export default {
       // 对小球和滚动条位置变换的css设置
       // this.$refs.progressDiv.style.width = `${e.offsetX}px`
       // this.$refs.progressBtn.style.transform = `translate3d(${e.offsetX}px, 0, 0)`
+      // 点击进度条，显示点击位置的歌词
     }
   },
   watch: {
