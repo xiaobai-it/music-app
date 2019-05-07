@@ -1,5 +1,6 @@
 import {SET_SINNER, SET_PLAYING, SET_FULLSCREEN,
-  SET_PLAYLIST, SET_SEQUENCELIST, SET_MODE, SET_CURRENTINDEX} from './actions-types'
+  SET_PLAYLIST, SET_SEQUENCELIST, SET_MODE, SET_CURRENTINDEX,
+  SET_HOTGEDANTUIJIANDATAACTIONS} from './actions-types'
 
 const mutations = {
   [SET_SINNER] (state, {singerData}) {
@@ -22,6 +23,9 @@ const mutations = {
   },
   [SET_CURRENTINDEX] (state, {index}) {
     state.currentIndex = index
+  },
+  [SET_HOTGEDANTUIJIANDATAACTIONS] (state, hotGeDanTuiJianDataActions) {
+    state.oneHotGeDanTuiJianData = hotGeDanTuiJianDataActions
   }
 }
 export default mutations

@@ -1,7 +1,7 @@
 <template>
   <div class="recommend" ref="recommend">
     <!--推荐页面-->
-    <Scroll :data="GeDanData" class="recommend-content" ref="lunboDiv">
+    <Scroll :data="GeDanData" class="recommend-content" ref="lunboDiv" >
       <div>
         <!--轮播图,注意要有数据的时候，显示轮播才可以，否则只循环一次到末尾，就停止轮播了-->
         <div class="slider-wrapper" v-if="lunboImgs.length" >
@@ -18,7 +18,7 @@
         <div class="recommend-list">
           <h1 class="list-title">热门歌单推荐</h1>
           <ul v-if="GeDanData.length">
-            <li v-for="(item, index) in GeDanData" :key="index" class="item">
+            <li v-for="(item, index) in GeDanData" :key="index" class="item" @click="goToRecommendDetail(item)">
               <div class="icon">
                 <img v-lazy="item.imgurl" alt="" width="60" height="60"/>
               </div>
@@ -35,6 +35,8 @@
         <Loading title="玩命加载中..." v-if="!GeDanData.length"></Loading>
       </div>
     </Scroll>
+    <!--推荐页面详情页-->
+    <router-view/>
   </div>
 </template>
 
@@ -45,7 +47,7 @@ import {swiper, swiperSlide} from 'vue-awesome-swiper'
 import {getRecommend, getHotGeDan} from '../../api/allAPI'
 import Scroll from '../../components/scroll/scroll'
 import Loading from '../../components/loading/loading'
-import {mapState} from 'vuex'
+import {mapState, mapActions} from 'vuex'
 
 export default {
   components: {
@@ -73,7 +75,7 @@ export default {
     swiper() {
       return this.$refs.mySwiper.swiper
     },
-    ...mapState(['playList'])
+    ...mapState(['fullScreen'])
   },
   mounted() {
     // 获取轮播图的图片
@@ -94,6 +96,7 @@ export default {
     })
   },
   methods: {
+    ...mapActions(['hotGeDanTuiJianDataActions']),
     // 点击推荐页面轮播图，进行跳转
     clickImg (index) {
       const linkUrl = this.lunboImgs[index].linkUrl
@@ -106,19 +109,25 @@ export default {
         this.$refs.lunboDiv.refresh()
         this.lunboimgloadfinish = true
       }
+    },
+    // 进入推荐详情页面
+    goToRecommendDetail (item) {
+      // console.log(item)
+      this.$router.push(`/recommend/${item.dissid}`)
+      this.hotGeDanTuiJianDataActions(item)
     }
   },
   watch: {
     // 监视playList歌曲数组的变化，如果数组长度大于0，让其最外面的div的bottom为60，解决迷你播放器和页面的自适应
-    playList () {
-      // scroll滚动没有反应，妈的什么情况，应该是swiper 和scroll 的冲突问题，待处理？？？？？？
-      const bottom = this.playList.length > 0 ? '60px' : ''
-      // if (!this.lunboimgloadfinish) {
-      //   this.$refs.lunboDiv.refresh()
-      //   this.lunboimgloadfinish = true
-      // }
-      this.$refs.lunboDiv.refresh()
+    fullScreen () {
+      // scroll滚动没有反应，于是监视fullScreen的状态改变 ，应该是swiper 和scroll 的冲突问题，待处理？？？？？？
+      // const bottom = this.playList.length > 0 ? '60px' : ''
+      // this.$refs.lunboDiv.refresh()
+      // this.$refs.recommend.style.bottom = bottom
+      // 还是有问题，第一次显示mini播放器，推荐界面根本不滚动？？？？
+      const bottom = !this.fullScreen ? '60px' : '0'
       this.$refs.recommend.style.bottom = bottom
+      this.$refs.lunboDiv.refresh()
     }
   }
 }

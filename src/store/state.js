@@ -7,6 +7,7 @@ const state = {
   playList: [], // 播放歌曲的数组，有三种:顺序、随机、单曲循环
   sequenceList: [], // 顺序播放歌曲的数组
   mode: playMode.sequence, // 默认顺序播放
-  currentIndex: -1 // 当前歌曲播的索引,当前播放的歌曲（currentSong），通过vuex的计算属性getters获取
+  currentIndex: -1, // 当前歌曲播的索引,当前播放的歌曲（currentSong），通过vuex的计算属性getters获取
+  oneHotGeDanTuiJianData: {} // 推荐界面中,某一个热门歌单推荐的数据
 }
 export default state

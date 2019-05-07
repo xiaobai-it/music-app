@@ -2,7 +2,7 @@
   <transition name="qwd">
     <!--歌手详情页面-->
     <div>
-      <musicList :musicData="musicData" :bgImg="bgImg" :singer-name="singerName"/>
+      <musicList :musicData="musicData" :bgImg="bgImg" :singer-name="singerName" ref="musicList"/>
     </div>
   </transition>
 </template>
@@ -31,7 +31,7 @@ export default {
         .then((respose) => {
           if (respose.code === 0) {
             const list = respose.data.list
-            // console.log(list)
+            console.log(list)
             // console.log(list[0]['musicData'].strMediaMid)
             // 把后台得到的数据进行处理，得到我自己想要的数据
             list.forEach((item) => {
@@ -46,7 +46,7 @@ export default {
               // obj.url = `http://ws.stream.qqmusic.qq.com/${item.musicData.songid}.m4a?fromtag=46`
               // obj.url = `http://dl.stream.qqmusic.qq.com/C400${item.musicData.songmid}.m4a?vkey=${songVkey}&guid=7981028948&uin=0&fromtag=66`
               // 上面2个歌曲播放地址不可用了，下面的可用，参考网址：https://blog.csdn.net/xiayiye5/article/details/79487560
-              obj.url = `https://api.bzqll.com/music/tencent/url?key=579621905&id=${item.musicData.songmid}br=320`
+              obj.url = `https://api.bzqll.com/music/tencent/url?key=579621905&id=${item.musicData.songmid}&br=320`
               // obj.url = `https://api.bzqll.com/music/tencent/url?key=579621905&id=${item.musicData.songmid}&br=320`
               this.musicData.push(obj)
             })
@@ -78,6 +78,15 @@ export default {
         singerStr.push(singer.name)
       })
       return singerStr.join('/')
+    }
+  },
+  watch: {
+    musicData () {
+      const bottom = this.musicData.length > 0 ? '60px' : ''
+      // 找到musicList组件的子元素需要滚动的div，设置bottom为60px
+      // this.$refs.musicList.$el.style.bottom = bottom
+      this.$refs.musicList.$children[0].$el.style.bottom = bottom
+      this.$refs.musicList.singerDetailDiaoYong()
     }
   }
 }

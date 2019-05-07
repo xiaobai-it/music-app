@@ -73,7 +73,7 @@ export default {
     bgStyle() {
       return `background-image :url("${this.bgImg}")`
     },
-    ...mapState(['playList'])
+    ...mapState(['fullScreen'])
   },
   methods: {
     ...mapActions(['clickOneSongShowPlay', 'clickRandomPlaySongs']),
@@ -90,6 +90,10 @@ export default {
     randomPlaySongs () {
       let musicData = this.musicData
       this.clickRandomPlaySongs({musicData})
+    },
+    // singer-detail组件调用该方法，实现scroll滚动，解决mini播放器的自适应问题
+    singerDetailDiaoYong () {
+      this.$refs.list.refresh()
     }
   },
   watch: {
@@ -119,9 +123,14 @@ export default {
       }
     },
     // 监视playList歌曲数组的变化，如果数组长度大于0，让其最外面的div的bottom为60，解决迷你播放器和页面的自适应
-    playList () {
-      // scroll滚动没有反应，妈的什么情况
-      const bottom = this.playList.length > 0 ? '60px' : ''
+    // playList () {
+    //   // scroll滚动没有反应，妈的什么情况
+    //   const bottom = this.playList.length > 0 ? '60px' : ''
+    //   this.$refs.list.$el.style.bottom = bottom
+    //   this.$refs.list.refresh()
+    // }
+    fullScreen () {
+      const bottom = !this.fullScreen ? '60px' : ''
       this.$refs.list.$el.style.bottom = bottom
       this.$refs.list.refresh()
     }
