@@ -19,7 +19,7 @@
     <Scroll class="list" :data="musicData" :probeType="probeType" :listenScroll="listenScroll" @zizujianscroll="zizujianscroll" ref="list">
       <div class="song-list-wrapper">
         <!-- songList组件-->
-        <SongList :musicData="musicData" @clickOneSong="clickOneSong"/>
+        <SongList :rank="rank" :musicData="musicData" @clickOneSong="clickOneSong"/>
       </div>
       <div class="loading-container" v-if="!musicData.length">
         <Loading :title="title"/>
@@ -53,6 +53,10 @@ export default {
     singerName: {
       type: String,
       default: ''
+    },
+    rank:{
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -91,7 +95,7 @@ export default {
       let musicData = this.musicData
       this.clickRandomPlaySongs({musicData})
     },
-    // singer-detail组件调用该方法，实现scroll滚动，解决mini播放器的自适应问题
+    // singer-detail组件\rank-detail组件调用该方法，实现scroll滚动，解决mini播放器的自适应问题
     singerDetailDiaoYong () {
       this.$refs.list.refresh()
     }

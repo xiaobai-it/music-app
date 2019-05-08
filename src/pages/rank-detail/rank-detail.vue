@@ -1,6 +1,6 @@
 <template>
   <transition name="slide">
-    <MusicList :singerName="singerName" :bgImg="bgImg" :musicData="musicData"></MusicList>
+    <MusicList :rank="rank" :singerName="singerName" :bgImg="bgImg" :musicData="musicData" ref="musicList"></MusicList>
     <Loading title="玩命加载中..." v-if="!musicData"></Loading>
   </transition>
 </template>
@@ -18,7 +18,8 @@ export default {
   },
   data() {
     return {
-      musicData: [] // 排行详情页的某一个数据
+      musicData: [], // 排行详情页的某一个数据
+      rank: true  // 是否显示song-list组件中的左侧数字
     }
   },
   mounted () {
@@ -81,7 +82,19 @@ export default {
       })
       return singerStr.join('/')
     }
+  },
+  watch: {
+    // 监视playList歌曲数组的变化，如果数组长度大于0，让其最外面的div的bottom为60，解决迷你播放器和页面的自适应
+    // scroll滚动没有反应，于是监视fullScreen的状态改变 ，应该是swiper 和scroll 的冲突问题，待处理？？？？？？
+    musicData () {
+      const bottom = !this.fullScreen ? '60px' : ''
+      // 找到musicList组件的子元素需要滚动的div，设置bottom为60px
+      // this.$refs.musicList.$el.style.bottom = bottom
+      this.$refs.musicList.$children[0].$el.style.bottom = bottom
+      this.$refs.musicList.singerDetailDiaoYong()
+    }
   }
+
 }
 </script>
 

@@ -47,17 +47,18 @@ export default {
               // 应该是点击歌曲，点击上一首、点击下一首 的时候在获取对应的歌曲链接，我这里就一次性都获取到了，
               // 这样做的缺点是小号流量，和用户体验不好，显示加载中的状态有点长,数据更新缓慢
               getplaysongvkey(item.musicData.songmid).then((response) => {
-                // console.log(response.data.req_0.data.midurlinfo[0].purl)
+                // 有的歌曲没有vkey，所以得不到purl。所以自己手动获取filename和testfile2g，然后拼接成歌曲的url
                 const purl = response.data.req_0.data.midurlinfo[0].purl
                 obj.url = `http://isure.stream.qqmusic.qq.com/${purl}`
+                // const filename = response.data.req_0.data.midurlinfo[0].filename
+                // const testfile2g = response.data.req_0.data.testfile2g.substr(23)
+                // obj.url = `http://isure.stream.qqmusic.qq.com/${filename}?${testfile2g}`
                 if (item.musicData.albummid && item.musicData.songid) {
                   this.musicData.push(obj)
                 }
               }).catch((err) => {
                 console.log(err)
               })
-              // obj.url = `http://isure.stream.qqmusic.qq.com/${purl}`
-              // this.musicData.push(obj)
             })
             // console.log(this.singer)
             console.log(this.musicData)

@@ -3,6 +3,10 @@
   <div class="song-list">
     <ul>
       <li class="item" v-for="(item, index) in musicData" :key="index" @click="clickOneSong(item,index)">
+        <div class="rank" v-if="rank">
+          <span :class="showRankImg(index)" v-if="index < 3"></span>
+          <span :class="showRankImg(index)" v-else>{{index + 1}}</span>
+        </div>
         <div class="content">
           <h2 class="name">{{item.name}}</h2>
           <p class="desc">歌手:{{item.singer}} / 所属专辑:{{item.album}}
@@ -19,6 +23,10 @@ export default {
     musicData: {
       type: Array,
       default: null
+    },
+    rank:{
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -32,6 +40,13 @@ export default {
   methods: {
     clickOneSong(item, index) {
       this.$emit('clickOneSong', item, index)
+    },
+    showRankImg (index) {
+      if (index < 3) {
+        return `icon icon${index}`
+      } else {
+        return 'text'
+      }
     }
   }
 }
@@ -57,4 +72,23 @@ export default {
         .desc
           font-size :$font-size-small
           color :$color-dialog-background
+      .rank
+        flex :0 0 15px
+        width :25px
+        margin-right: 15px
+        text-align: center
+        .icon
+          display :inline-block
+          width: 17px
+          height:17px
+          background-size:17px 17px
+          &.icon0
+            background-image : url("./first@2x.png")
+          &.icon1
+            bg-image('second')
+          &.icon2
+            bg-image('third')
+        .text
+          color: $color-theme
+          font-size :$font-size-large
 </style>
