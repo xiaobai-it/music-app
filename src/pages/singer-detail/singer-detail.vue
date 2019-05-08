@@ -10,7 +10,7 @@
 <script>
 import {mapState} from 'vuex'
 
-import {getSingerDetail} from '../../api/allAPI'
+import {getSingerDetail, getplaysongvkey} from '../../api/allAPI'
 import musicList from '../../components/music-list/music-list'
 
 export default {
@@ -43,12 +43,21 @@ export default {
               obj.album = item.musicData.albumname
               obj.duration = item.musicData.interval
               obj.image = `https://y.gtimg.cn/music/photo_new/T002R300x300M000${item.musicData.albummid}.jpg?max_age=2592000`
-              // obj.url = `http://ws.stream.qqmusic.qq.com/${item.musicData.songid}.m4a?fromtag=46`
-              // obj.url = `http://dl.stream.qqmusic.qq.com/C400${item.musicData.songmid}.m4a?vkey=${songVkey}&guid=7981028948&uin=0&fromtag=66`
-              // 上面2个歌曲播放地址不可用了，下面的可用，参考网址：https://blog.csdn.net/xiayiye5/article/details/79487560
-              obj.url = `https://api.bzqll.com/music/tencent/url?key=579621905&id=${item.musicData.songmid}&br=320`
               // obj.url = `https://api.bzqll.com/music/tencent/url?key=579621905&id=${item.musicData.songmid}&br=320`
-              this.musicData.push(obj)
+              // 应该是点击歌曲，点击上一首、点击下一首 的时候在获取对应的歌曲链接，我这里就一次性都获取到了，
+              // 这样做的缺点是小号流量，和用户体验不好，显示加载中的状态有点长,数据更新缓慢
+              getplaysongvkey(item.musicData.songmid).then((response) => {
+                // console.log(response.data.req_0.data.midurlinfo[0].purl)
+                const purl = response.data.req_0.data.midurlinfo[0].purl
+                obj.url = `http://isure.stream.qqmusic.qq.com/${purl}`
+                if (item.musicData.albummid && item.musicData.songid) {
+                  this.musicData.push(obj)
+                }
+              }).catch((err) => {
+                console.log(err)
+              })
+              // obj.url = `http://isure.stream.qqmusic.qq.com/${purl}`
+              // this.musicData.push(obj)
             })
             // console.log(this.singer)
             console.log(this.musicData)

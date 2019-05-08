@@ -101,6 +101,32 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         }).catch((err)=>{
           console.log(err)
         })
+      }),
+      // 点击播放歌曲的时候，需要一个vkey，下面的函数就是获取vkey的
+      apiRoutes.get('/api/getplaysongvkey', (req, res) => {
+          var url = 'https://u.y.qq.com/cgi-bin/musicu.fcg'
+          axios.get(url,{
+            // headers: {referer: 'https://c.y.qq.com/',  host: 'c.y.qq.com'},
+            headers: {origin: 'https://y.qq.com', referer: 'https://y.qq.com/portal/player.html'},
+            params: req.query
+          }).then((response)=>{
+            res.json(response.data)
+          }).catch((err)=>{
+            console.log(err)
+          })
+        })
+      // 获取排行首页对应的后台数据的函数-QQ移动端
+      apiRoutes.get('/api/getTopLst', (req, res) => {
+        var url = 'https://c.y.qq.com/v8/fcg-bin/fcg_myqq_toplist.fcg'
+        axios.get(url,{
+          // headers: {referer: 'https://c.y.qq.com/',  host: 'c.y.qq.com'},
+          headers: {origin: 'https://y.qq.com', referer: 'https://y.qq.com/portal/player.html'},
+          params: req.query
+        }).then((response)=>{
+          res.json(response.data)
+        }).catch((err)=>{
+          console.log(err)
+        })
       })
     }
   },

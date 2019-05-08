@@ -146,3 +146,84 @@ export function getTuiJianDeatalPageSongs(dissid) {
       return Promise.reject(err)
     })
 }
+// 点击播放歌曲的时候，需要一个vkey，下面的函数就是获取vkey的
+// 参考网址：https://blog.csdn.net/xiayiye5/article/details/79487560
+// http://ws.stream.qqmusic.qq.com/${item.musicData.songid}.m4a?fromtag=46
+// https://api.bzqll.com/music/tencent/url?key=579621905&id=${item.musicData.songmid}br=320
+// https://api.bzqll.com/music/tencent/url?key=579621905&id=${item.musicData.songmid}&br=320
+// 上面3种，目前都不可用了
+// http://isure.stream.qqmusic.qq.com/C400000nIGM005K6oC.m4a?guid=9092958176&vkey=03BC619A4AF3A01B610B35CBD108367451EAE304B38ACC84CEDCE84223745DA2024B5A6FEA86EA0DFDD184A6DDDF3905542F4F76660176C2&uin=0&fromtag=66
+export function getplaysongvkey(songmid) {
+  // 再次跨域了，正常请求请求不到数据
+  // const url = 'https://u.y.qq.com/cgi-bin/musicu.fcg?-=getplaysongvkey4780514060559309&g_tk=5381&loginUin=0&hostUin=0&format=json&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq.json&needNewCode=0&data=%7B%22req%22%3A%7B%22module%22%3A%22CDN.SrfCdnDispatchServer%22%2C%22method%22%3A%22GetCdnDispatch%22%2C%22param%22%3A%7B%22guid%22%3A%229092958176%22%2C%22calltype%22%3A0%2C%22userip%22%3A%22%22%7D%7D%2C%22req_0%22%3A%7B%22module%22%3A%22vkey.GetVkeyServer%22%2C%22method%22%3A%22CgiGetVkey%22%2C%22param%22%3A%7B%22guid%22%3A%229092958176%22%2C%22songmid%22%3A%5B%22002mZevo3wHvsc%22%5D%2C%22songtype%22%3A%5B0%5D%2C%22uin%22%3A%220%22%2C%22loginflag%22%3A1%2C%22platform%22%3A%2220%22%7D%7D%2C%22comm%22%3A%7B%22uin%22%3A0%2C%22format%22%3A%22json%22%2C%22ct%22%3A24%2C%22cv%22%3A0%7D%7D'
+  const url = '/api/getplaysongvkey'
+  const queryParams = {
+    // -: 'getplaysongvkey7257571376863041',
+    g_tk: 5381,
+    loginUin: 0,
+    hostUin: 0,
+    format: 'json',
+    inCharset: 'utf8',
+    outCharset: 'utf-8',
+    notice: 0,
+    platform: 'yqq.json',
+    needNewCode: 0,
+    data: `{"req":{"module":"CDN.SrfCdnDispatchServer","method":"GetCdnDispatch","param":{"guid":"9092958176","calltype":0,"userip":""}},"req_0":{"module":"vkey.GetVkeyServer","method":"CgiGetVkey","param":{"guid":"9092958176","songmid":["${songmid}"],"songtype":[0],"uin":"0","loginflag":1,"platform":"20"}},"comm":{"uin":0,"format":"json","ct":24,"cv":0}}`
+  }
+  return axios.get(url, {params: queryParams})
+    .then((response) => {
+      return Promise.resolve(response)
+    })
+    .catch((err) => {
+      return Promise.reject(err)
+    })
+}
+// 获取排行首页对应的后台数据的函数-QQ移动端
+export function getTopLst() {
+  // 再次跨域了，正常请求请求不到数据
+  // const url = 'https://c.y.qq.com/v8/fcg-bin/fcg_myqq_toplist.fcg'
+  const url = '/api/getTopLst'
+  const queryParams = {
+    g_tk: 5381,
+    uin: 0,
+    format: 'json',
+    inCharset: 'utf-8',
+    outCharset: 'utf-8',
+    notice: 0,
+    platform: 'h5',
+    needNewCode: 1
+  }
+  return axios.get(url, {params: queryParams})
+    .then((response) => {
+      return Promise.resolve(response)
+    })
+    .catch((err) => {
+      return Promise.reject(err)
+    })
+}
+// 点击排行首页对应某一个方框，获取对应的歌曲后台数据的函数-QQ移动端 --排行详情页
+export function getTopLstDetail(detailId) {
+  // const url = 'https://c.y.qq.com/portalcgi/fcgi-bin/music_mini_portal/fcg_getuser_infoEx.fcg'
+  const url = 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_toplist_cp.fcg'
+  const queryParams = {
+    g_tk: 5381,
+    uin: 0,
+    format: 'json',
+    inCharset: 'utf-8',
+    outCharset: 'utf-8',
+    notice: 0,
+    platform: 'h5',
+    needNewCode: 1,
+    // source: 4001,
+    tpl: 3,
+    page: 'detail',
+    type: 'top',
+    topid: detailId
+  }
+  // 是jsonp请求的时候，传递的参数
+  const options = {
+    param: 'jsonpCallback'
+  }
+  // 调用封装之后的jsonp
+  return jsonp(url, queryParams, options)
+}

@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import rank from '../pages/rank/rank' // 排行页面
+import rankDetail from '../pages/rank-detail/rank-detail' // 排行页面
 import recommend from '../pages/recommend/recommend' // 推荐页面
 import search from '../pages/search/search' // 搜索页面
 import singer from '../pages/singer/singer' // 歌手页面
@@ -14,7 +15,13 @@ export default new Router({
   routes: [
     {
       path: '/rank',
-      component: rank
+      component: rank,
+      children: [
+        {
+          path: '/rank/:id',
+          component: rankDetail
+        }
+      ]
     },
     {
       path: '/recommend',

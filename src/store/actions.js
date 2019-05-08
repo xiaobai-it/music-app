@@ -1,6 +1,6 @@
 import {SET_SINNER, SET_PLAYING, SET_FULLSCREEN,
   SET_PLAYLIST, SET_SEQUENCELIST, SET_CURRENTINDEX, SET_MODE,
-  SET_HOTGEDANTUIJIANDATAACTIONS} from './actions-types'
+  SET_HOTGEDANTUIJIANDATAACTIONS, SET_ONETOPLIST} from './actions-types'
 import {playMode} from '../common/js/playModeConfig'
 import {songsRandomPaiXu} from '../common/js/songsRandomPaiXu'
 
@@ -54,6 +54,10 @@ const actions = {
   // 推荐界面中,某一个热门歌单推荐的数据
   hotGeDanTuiJianDataActions ({commit, state}, hotGeDanTuiJianDataActions) {
     commit(SET_HOTGEDANTUIJIANDATAACTIONS, hotGeDanTuiJianDataActions)
+  },
+  // 排行首页界面中,某一个排行的数据
+  oneTopList ({commit, state}, oneTopList) {
+    commit(SET_ONETOPLIST, oneTopList)
   }
 }
 export default actions

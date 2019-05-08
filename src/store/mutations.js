@@ -1,6 +1,6 @@
 import {SET_SINNER, SET_PLAYING, SET_FULLSCREEN,
   SET_PLAYLIST, SET_SEQUENCELIST, SET_MODE, SET_CURRENTINDEX,
-  SET_HOTGEDANTUIJIANDATAACTIONS} from './actions-types'
+  SET_HOTGEDANTUIJIANDATAACTIONS, SET_ONETOPLIST} from './actions-types'
 
 const mutations = {
   [SET_SINNER] (state, {singerData}) {
@@ -26,6 +26,9 @@ const mutations = {
   },
   [SET_HOTGEDANTUIJIANDATAACTIONS] (state, hotGeDanTuiJianDataActions) {
     state.oneHotGeDanTuiJianData = hotGeDanTuiJianDataActions
+  },
+  [SET_ONETOPLIST] (state, oneTopList) {
+    state.oneTopList = oneTopList
   }
 }
 export default mutations
