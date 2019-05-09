@@ -24,7 +24,7 @@ export default {
       type: Array,
       default: null
     },
-    rank:{
+    rank: {
       type: Boolean,
       default: false
     }

@@ -227,3 +227,60 @@ export function getTopLstDetail(detailId) {
   // 调用封装之后的jsonp
   return jsonp(url, queryParams, options)
 }
+
+// 获取搜索首页下的热门搜索内的的后台数据的函数
+export function getHotKey() {
+  const url = 'https://c.y.qq.com/splcloud/fcgi-bin/gethotkey.fcg'
+  const queryParams = {
+    g_tk: 5381,
+    uin: 0,
+    format: 'json',
+    inCharset: 'utf-8',
+    outCharset: 'utf-8',
+    notice: 0,
+    platform: 'h5',
+    needNewCode: 1
+  }
+  // 是jsonp请求的时候，传递的参数
+  const options = {
+    param: 'jsonpCallback'
+  }
+  // 调用封装之后的jsonp
+  return jsonp(url, queryParams, options)
+}
+// 接收到搜索框内的数据后，search-result组件内发起请求，获取对应的后台数据
+export function getSearchResult(queryValue, catZhida, page) {
+  // 再次跨域了，正常请求请求不到数据
+  // const url = 'https://c.y.qq.com/soso/fcgi-bin/search_for_qq_cp'
+  const url = '/api/getSearchResult'
+  const queryParams = {
+    g_tk: 5381,
+    uin: 0,
+    format: 'json',
+    inCharset: 'utf-8',
+    outCharset: 'utf-8',
+    notice: 0,
+    platform: 'h5',
+    needNewCode: 1,
+    w: queryValue, // 查询的数据
+    zhidaqu: 1,
+    // catZhida: 1, // 是否显示歌手
+    catZhida: catZhida ? 1 : 0, // 是否显示歌手
+    t: 0,
+    flag: 1,
+    ie: 'utf-8',
+    sem: 1,
+    aggr: 0,
+    perpage: 20,
+    n: 20,
+    p: page, // 查询第几页的数据
+    remoteplace: 'txt.mqq.all'
+  }
+  return axios.get(url, {params: queryParams})
+    .then((response) => {
+      return Promise.resolve(response)
+    })
+    .catch((err) => {
+      return Promise.reject(err)
+    })
+}

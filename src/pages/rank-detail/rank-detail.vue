@@ -19,7 +19,7 @@ export default {
   data() {
     return {
       musicData: [], // 排行详情页的某一个数据
-      rank: true  // 是否显示song-list组件中的左侧数字
+      rank: true // 是否显示song-list组件中的左侧数字
     }
   },
   mounted () {

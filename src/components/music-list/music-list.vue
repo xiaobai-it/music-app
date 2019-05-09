@@ -54,7 +54,7 @@ export default {
       type: String,
       default: ''
     },
-    rank:{
+    rank: {
       type: Boolean,
       default: false
     }

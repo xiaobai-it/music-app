@@ -1,46 +1,134 @@
 <template>
   <div class="search">
     <!--搜索页面-->
-    搜索页面
-    <!--<div class="search-box-wrapper">-->
-      <!--<search-box ref="searchBox" @query="onQueryChange"></search-box>-->
-    <!--</div>-->
-    <!--<div ref="shortcutWrapper" class="shortcut-wrapper" v-show="!query">-->
-      <!--<scroll :refreshDelay="refreshDelay" ref="shortcut" class="shortcut" :data="shortcut">-->
-        <!--<div>-->
-          <!--<div class="hot-key">-->
-            <!--<h1 class="title">热门搜索</h1>-->
-            <!--<ul>-->
-              <!--<li @click="addQuery(item.k)" class="item" v-for="item in hotKey">-->
-                <!--<span>{{item.k}}</span>-->
-              <!--</li>-->
-            <!--</ul>-->
-          <!--</div>-->
-          <!--<div class="search-history" v-show="searchHistory.length">-->
-            <!--<h1 class="title">-->
-              <!--<span class="text">搜索历史</span>-->
-              <!--<span @click="showConfirm" class="clear">-->
-                <!--<i class="icon-clear"></i>-->
-              <!--</span>-->
-            <!--</h1>-->
-            <!--<search-list @delete="deleteSearchHistory" @select="addQuery" :searches="searchHistory"></search-list>-->
-          <!--</div>-->
-        <!--</div>-->
-      <!--</scroll>-->
-    <!--</div>-->
-    <!--<div class="search-result" v-show="query" ref="searchResult">-->
-      <!--<suggest @listScroll="blurInput" @select="saveSearch" ref="suggest" :query="query"></suggest>-->
-    <!--</div>-->
-    <!--<confirm ref="confirm" @confirm="clearSearchHistory" text="是否清空所有搜索历史" confirmBtnText="清空"></confirm>-->
-    <!--<router-view></router-view>-->
+    <div class="search-box-wrapper">
+      <!--搜索框组件-->
+      <Searchkuang ref="searchkuang" @queryValue="queryValue"/>
+    </div>
+    <div class="shortcut-wrapper" v-if="!showSearchResult">
+      <div class="shortcut">
+        <div>
+          <div class="hot-key">
+            <h1 class="title">热门搜索</h1>
+            <ul v-show="hotKey">
+              <li class="item" v-for="(item, index) in hotKey" :key="index" @click="andSearchToInput(item.k)">
+                <span>{{item.k}}</span>
+              </li>
+            </ul>
+          </div>
+          <div class="search-history">
+            <h1 class="title">
+              <span class="text">搜索历史</span>
+              <span class="clear">
+                <i class="icon-clear"></i>
+              </span>
+            </h1>
+            <!--<search-list ></search-list>-->
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="search-result" v-if="showSearchResult">
+      <!--显示搜索结果的组件-->
+      <SearchResult :showSearchResult="showSearchResult"/>
+    </div>
+    <!--<confirm text="是否清空所有搜索历史" confirmBtnText="清空"></confirm>-->
+    <router-view></router-view>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+import Searchkuang from '../../components/search-kuang/search-kuang'
+import SearchResult from '../../components/search-result/search-result'
+import {getHotKey} from '../../api/allAPI'
 
 export default {
+  components: {
+    Searchkuang,
+    SearchResult
+  },
+  data () {
+    return {
+      hotKey: [], // 热门搜索数据
+      showSearchResult: '' // 输入框输入的数据
+    }
+  },
+  mounted () {
+    // 获取搜索首页下的热门搜索内的的后台数据的函数
+    getHotKey().then((response) => {
+      if (response.code === 0) {
+        this.hotKey = response.data.hotkey.slice(0, 10)
+      }
+    }).catch((err) => {
+      console.log(err)
+    })
+  },
+  computed: {
+  },
+  methods: {
+    // 点击热门搜索，把值添加到搜索框内
+    andSearchToInput (value) {
+      this.$refs.searchkuang.andSearchToInput(value)
+    },
+    // search-kuang组件传递过来的函数，保存输入框输入的值
+    queryValue (newQuery) {
+      this.showSearchResult = newQuery
+      console.log(this.showSearchResult)
+    }
+  },
+  watch: {
+  }
 }
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
+  @import "../../common/stylus/variable"
+  @import "../../common/stylus/mixin"
+
+  .search
+    .search-box-wrapper
+      margin: 20px
+    .shortcut-wrapper
+      position: fixed
+      top: 178px
+      bottom: 0
+      width: 100%
+      .shortcut
+        height: 100%
+        overflow: hidden
+        .hot-key
+          margin: 0 20px 20px 20px
+          .title
+            margin-bottom: 20px
+            font-size: $font-size-medium
+            color: $color-text-l
+          .item
+            display: inline-block
+            padding: 5px 10px
+            margin: 0 20px 10px 0
+            border-radius: 6px
+            background: $color-highlight-background
+            font-size: $font-size-medium
+            color: $color-text-d
+        .search-history
+          position: relative
+          margin: 0 20px
+          .title
+            display: flex
+            align-items: center
+            height: 40px
+            font-size: $font-size-medium
+            color: $color-text-l
+            .text
+              flex: 1
+            .clear
+              extend-click()
+              .icon-clear
+                font-size: $font-size-medium
+                color: $color-text-d
+    .search-result
+      position: fixed
+      width: 100%
+      top: 178px
+      bottom: 0
 </style>

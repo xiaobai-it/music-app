@@ -127,7 +127,21 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         }).catch((err)=>{
           console.log(err)
         })
-      })
+      }),
+      // 接收到搜索框内的数据后，search-result组件内发起请求，获取对应的后台数据
+        apiRoutes.get('/api/getSearchResult', (req, res) => {
+          var url = 'https://c.y.qq.com/soso/fcgi-bin/search_for_qq_cp'
+          axios.get(url,{
+            // headers: {referer: 'https://c.y.qq.com/',  host: 'c.y.qq.com'},
+            headers: {origin: 'https://y.qq.com', referer: 'https://y.qq.com/portal/player.html'},
+            params: req.query
+          }).then((response)=>{
+            console.log(response)
+            res.json(response.data)
+          }).catch((err)=>{
+            console.log(err)
+          })
+        })
     }
   },
   plugins: [
