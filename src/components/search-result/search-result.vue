@@ -17,8 +17,9 @@
       </span>
     </ul>
     <Loading class="searchLoading" title="玩命加载中..." v-show="result.length === 0" ref="loading"/>
-    <div class="no-result-wrapper">
-      <!--<no-result title="抱歉，暂无搜索结果"></no-result>-->
+    <div class="no-result-wrapper" v-show="!LoadingMore && result.length === 0">
+      <!--搜索不到任何数据的时候，显示的组件no-reslt-->
+      <noResult title="抱歉，暂无搜索结果"/>
     </div>
   </Scroll>
 </template>
@@ -28,11 +29,13 @@ import Loading from '../loading/loading'
 import {getSearchResult, getplaysongvkey} from '../../api/allAPI'
 import Scroll from '../../components/scroll/scroll'
 import {mapActions} from 'vuex'
+import noResult from '../../components/no-result/no-result'
 
 export default {
   components: {
     Loading,
-    Scroll
+    Scroll,
+    noResult
   },
   props: {
     catZhida: { // 搜索的时候是否显示歌手
@@ -252,6 +255,6 @@ export default {
     .no-result-wrapper
       position: absolute
       width: 100%
-      top: 50%
+      top: 42%
       transform: translateY(-50%)
 </style>

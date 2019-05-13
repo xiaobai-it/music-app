@@ -114,6 +114,7 @@ export default {
         .search-history
           position: relative
           margin: 0 20px
+          z-index :9
           .title
             display: flex
             align-items: center

@@ -22,14 +22,12 @@ export default {
       query: ''
     }
   },
-  // created () {
-  //   console.log(this.query)
-  //   this.$watch('query', (newQuery) => {
-  //     console.log(newQuery)
-  //     // 输入框的数据改变的时候，发送输入的数据query 给search-result组件
-  //     this.$emit('queryValue', newQuery)
-  //   })
-  // },
+  mounted () {
+    this.$watch('query', this.jieLiuFunc((newQuery) => {
+      // 输入框的数据改变的时候，发送输入的数据query 给search-result组件
+      this.$emit('queryValue', newQuery)
+    }, 300))
+  },
   methods: {
     // 清除搜索内容
     clearInputValue () {
@@ -38,13 +36,25 @@ export default {
     // 点击热门搜索，把值添加到搜索框内
     andSearchToInput (value) {
       this.query = value
+    },
+    // 节流函数，实现搜索框快速变换，只发起最后一次的请求
+    jieLiuFunc (func, time) {
+      let timer
+      return function (...args) {
+        if (timer) {
+          clearTimeout(timer)
+        }
+        timer = setTimeout(() => {
+          func.apply(this, args)
+        }, time)
+      }
     }
   },
   watch: {
-    query () {
-      // 输入框的数据改变的时候，发送输入的数据query 给search-result组件
-      this.$emit('queryValue', this.query)
-    }
+    // query () {
+    //   // 输入框的数据改变的时候，发送输入的数据query 给search-result组件
+    //   this.$emit('queryValue', this.query)
+    // }
   }
 }
 </script>
