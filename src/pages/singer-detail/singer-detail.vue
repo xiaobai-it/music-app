@@ -33,6 +33,7 @@ export default {
             const list = respose.data.list
             console.log(list)
             // console.log(list[0]['musicData'].strMediaMid)
+
             // 把后台得到的数据进行处理，得到我自己想要的数据
             list.forEach((item) => {
               let obj = {} // 创建一个对象保存需要的数据

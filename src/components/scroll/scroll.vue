@@ -24,6 +24,10 @@ export default {
     listenScroll: {// 数据在动态变化时，滚动重新刷新，这个属性是自定义属性，是组件传递过来的
       type: Boolean,
       default: false
+    },
+    isShangLaLoading: {// 搜索页面默认加载20条数据，该属性为true时，才可以下拉加载更多，这个属性是自定义属性，是组件传递过来的
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -42,6 +46,16 @@ export default {
         let that = this // 保证回调函数是vue来调用
         this.scroll.on('scroll', (position) => {
           that.$emit('zizujianscroll', position)
+        })
+      }
+      // 搜索页面默认加载20条数据，该属性为true时，才可以下拉加载更多
+      if (this.isShangLaLoading) {
+        let that = this // 保证回调函数是vue来调用
+        this.scroll.on('scrollEnd', () => {
+          if (this.scroll.y <= this.scroll.maxScrollY + 50) {
+            console.log('开始上拉加载')
+            that.$emit('scrollToBottomLoadingMore')
+          }
         })
       }
     }, 20)

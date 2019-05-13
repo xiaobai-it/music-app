@@ -72,6 +72,7 @@ export default {
     },
     // 显示歌手的title
     singerTitle () {
+      // console.log(this.singerList)
       if (this.scrollY >= 0) {
         return ''
       }

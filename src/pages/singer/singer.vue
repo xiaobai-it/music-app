@@ -62,7 +62,7 @@ export default {
             })
           })
           // 上面得到的数据就是我们想要的数据，但是因为是对象，所以是无序的，还要变成数组，因为是数组是有序的
-          console.log(finallData)
+          // console.log(finallData)
           let hotArr = []
           let otherArr = []
           for (let key in finallData) {
@@ -77,7 +77,7 @@ export default {
             return a.title.charCodeAt(0) - b.title.charCodeAt(0)
           })
           this.singerList = hotArr.concat(otherArr)
-          console.log(this.singerList)
+          // console.log(this.singerList)
         }
       }).catch((err) => {
         console.log(err)
@@ -85,6 +85,7 @@ export default {
     },
     // 跳转到歌手详情页
     goToDetail(singerItem) {
+      console.log(singerItem)
       this.$router.push(`/singer/detail/${singerItem.id}`)
       this.setSinger(singerItem)
     }

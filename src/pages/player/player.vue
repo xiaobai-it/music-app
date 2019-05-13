@@ -84,6 +84,10 @@
           <img  width="40" height="40" v-lazy="currentSong.image" :class="changeImgrotate">
         </div>
         <div class="text">
+          <div class="mini-progressbar">
+            <!--ProgressBar组件-->
+            <ProgressBar :prossBarBaiFenBi="prossBarBaiFenBi" @progressTouchEnd="progressTouchEnd" />
+          </div>
           <h2 class="name" >{{currentSong.name}}</h2>
           <p class="desc" >{{currentSong.singer}}</p>
         </div>
@@ -436,11 +440,12 @@ export default {
       if (newSong.id === oldSong.id) {
         return
       }
+      console.log('歌曲改变了')
       // 解决连续点击下一首歌曲，出现的歌词回跳的问题
       if (this.currentLyric) {
         this.currentLyric.stop()
       }
-      // 确保dom加载完成，在调用播放器，否则报错
+      // 确保dom加载完成，在调用歌词播放器，否则报错
       setTimeout(() => {
         // 获取对应的歌曲的歌词,必须传入歌曲的mid
         getLyric(this.currentSong.mid)
@@ -463,11 +468,12 @@ export default {
           })
         // 播放器开始播放
         this.$refs.audio.play()
-      }, 1000)
+      }, 500)
     },
     // 播放状态改变的时候，按钮变换图片，同时歌曲暂停或播放
     playing() {
       this.$nextTick(() => {
+        console.log('歌曲改变了')
         this.playing ? this.$refs.audio.play() : this.$refs.audio.pause()
       })
     }
@@ -695,10 +701,13 @@ export default {
           no-wrap()
           font-size: $font-size-medium
           color: $color-text
+          margin-top :-8px
         .desc
           no-wrap()
           font-size: $font-size-small
           color: $color-text-d
+        .mini-progressbar
+          margin-top :-7px
       .control
         flex: 0 0 30px
         width: 30px

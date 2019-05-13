@@ -58,6 +58,59 @@ const actions = {
   // 排行首页界面中,某一个排行的数据
   oneTopList ({commit, state}, oneTopList) {
     commit(SET_ONETOPLIST, oneTopList)
+  },
+  // 搜索页面搜索到数据后，点击某一个歌曲，跳转到播放页面，播放点击的歌曲
+  searchResultClickOneSongInsertAndToPlayPage({commit, state}, searchOneSong) {
+    let playList = state.playList.slice()
+    let sequenceList = state.sequenceList.slice()
+    let currentIndex = state.currentIndex
+    // 得到当前播放的歌曲
+    let currentSong = playList[currentIndex]
+    // 得到点击搜索界面的歌曲的id，判断是否在playlist数组里面,在返回playlist数组对应的索引，不在返回-1
+    let yuanLaiIndex = playList.findIndex((oneSong) => {
+      return oneSong.id === searchOneSong.id
+    })
+    // 把搜索界面点击的歌曲添加到playlist数组里面
+    currentIndex++
+    playList.splice(currentIndex, 0, searchOneSong)
+    // 判断搜索界面点击的歌曲是否在playlist数组里面
+    if (yuanLaiIndex !== -1) {
+      // 说明在playlist数组里面
+      if (currentIndex > yuanLaiIndex) {
+        // 如果插入的歌曲的索引，大于playlist数组里面之前就存在的对应的歌曲的索引
+        playList.splice(yuanLaiIndex, 1)
+        currentIndex--
+      } else {
+        playList.splice(yuanLaiIndex + 1, 1)
+      }
+    }
+    // 把搜索界面点击的歌曲添加到sequenceList数组里面
+    // 得到需要插入到sequenceList数组里面的位置（当前播放歌曲的索引+1）
+    let chaRuSequenceListIndex = sequenceList.findIndex((oneSong) => {
+      return oneSong.id === currentSong.id
+    }) + 1
+    // 得到点击搜索界面的歌曲的id，判断是否在sequenceList数组里面,在返回sequenceList数组对应的索引，不在返回-1
+    let yuanLaiSequenceListIndex = sequenceList.findIndex((oneSong) => {
+      return oneSong.id === searchOneSong.id
+    })
+    // 把搜索界面点击的歌曲添加到sequenceList数组里面当前播放歌曲的下一个位置
+    sequenceList.splice(chaRuSequenceListIndex, 0, searchOneSong)
+    // 判断搜索界面点击的歌曲是否在sequenceList数组里面
+    if (yuanLaiSequenceListIndex !== -1) {
+      // 说明在sequenceList数组里面
+      if (chaRuSequenceListIndex > yuanLaiSequenceListIndex) {
+        // 如果插入的歌曲的索引，大于sequenceList数组里面之前就存在的对应的歌曲的索引
+        sequenceList.splice(yuanLaiSequenceListIndex, 1)
+        yuanLaiSequenceListIndex--
+      } else {
+        sequenceList.splice(yuanLaiSequenceListIndex + 1, 1)
+      }
+    }
+    commit(SET_PLAYING, true)
+    commit(SET_FULLSCREEN, true)
+    commit(SET_PLAYLIST, {musicData: playList})
+    commit(SET_SEQUENCELIST, {musicData: sequenceList})
+    commit(SET_CURRENTINDEX, {index: currentIndex})
   }
 }
 export default actions

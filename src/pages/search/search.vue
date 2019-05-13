@@ -28,7 +28,8 @@
         </div>
       </div>
     </div>
-    <div class="search-result" v-if="showSearchResult">
+    <!--<div class="search-result" v-if="showSearchResult">-->
+    <div class="search-result">
       <!--显示搜索结果的组件-->
       <SearchResult :showSearchResult="showSearchResult"/>
     </div>
@@ -73,7 +74,6 @@ export default {
     // search-kuang组件传递过来的函数，保存输入框输入的值
     queryValue (newQuery) {
       this.showSearchResult = newQuery
-      console.log(this.showSearchResult)
     }
   },
   watch: {
@@ -93,6 +93,7 @@ export default {
       top: 178px
       bottom: 0
       width: 100%
+      z-index: 10
       .shortcut
         height: 100%
         overflow: hidden
