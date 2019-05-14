@@ -37,7 +37,7 @@ export default {
     andSearchToInput (value) {
       this.query = value
     },
-    // 节流函数，实现搜索框快速变换，只发起最后一次的请求
+    // 节流函数，实现搜索框快速变换搜索数据，只发起最后一次的请求
     jieLiuFunc (func, time) {
       let timer
       return function (...args) {
@@ -48,6 +48,10 @@ export default {
           func.apply(this, args)
         }, time)
       }
+    },
+    // 搜索页面加载出来数据后，是否需要滚动，如果滚动，在滚动之前隐藏手机键盘
+    blurInput () {
+      this.$refs.input.blur()
     }
   },
   watch: {

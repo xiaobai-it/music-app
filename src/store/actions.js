@@ -1,8 +1,10 @@
 import {SET_SINNER, SET_PLAYING, SET_FULLSCREEN,
   SET_PLAYLIST, SET_SEQUENCELIST, SET_CURRENTINDEX, SET_MODE,
-  SET_HOTGEDANTUIJIANDATAACTIONS, SET_ONETOPLIST} from './actions-types'
+  SET_HOTGEDANTUIJIANDATAACTIONS, SET_ONETOPLIST,
+  SET_SAVESEARCHHISTORYJILU} from './actions-types'
 import {playMode} from '../common/js/playModeConfig'
 import {songsRandomPaiXu} from '../common/js/songsRandomPaiXu'
+import {saveSearchHistory} from '../common/js/all-search-history'
 
 const actions = {
   setSinger ({commit, state}, singerData) {
@@ -111,6 +113,13 @@ const actions = {
     commit(SET_PLAYLIST, {musicData: playList})
     commit(SET_SEQUENCELIST, {musicData: sequenceList})
     commit(SET_CURRENTINDEX, {index: currentIndex})
+  },
+  // 保存搜索记录到vuex中的searchHistoryJiLu和本地缓存localstorage中
+  saveSearchHistoryJiLU ({commit, sate}, searchValue) {
+    // 获取、设置本地缓存的值、对搜索记录的总数和顺序进行规定
+    const searchHistoryArr = saveSearchHistory(searchValue)
+    // 提交搜索记录
+    commit(SET_SAVESEARCHHISTORYJILU, searchHistoryArr)
   }
 }
 export default actions

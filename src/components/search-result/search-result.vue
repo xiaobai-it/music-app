@@ -1,7 +1,9 @@
 <template>
   <Scroll class="suggest" :data="result" ref="suggest"
           :isShangLaLoading="isShangLaLoading"
-          @scrollToBottomLoadingMore="scrollToBottomLoadingMore">
+          @scrollToBottomLoadingMore="scrollToBottomLoadingMore"
+          :isSearchResultMove="isSearchResultMove"
+          @myBeforeScrollStart="myBeforeScrollStart">
     <ul class="suggest-list">
       <li class="suggest-item" v-for="(item, index) in result"  :key="index" @click="goToSingerDetailOrPlaySong(item)">
         <div class="icon">
@@ -11,7 +13,7 @@
           <p class="text">{{showSongAndSinger(item)}}</p>
         </div>
       </li>
-      <Loading title="正在加载中..." v-show="showLoadingMoreZuJian"/>
+      <Loading title="正在加载中..." v-show="showLoadingMoreZuJian" ref="bottomLoading"/>
       <span class="dataSearchFinal" style="display: none" ref="dataSearchFinal">
         ------------亲,这回真的到底了哦!------------
       </span>
@@ -53,7 +55,8 @@ export default {
       result: [], // 保存搜索结果
       isShangLaLoading: true, // 为true时，把属性传递给scroll组件，可以实现上拉加载
       LoadingMore: true, // 上拉加载更多数据的标记
-      showLoadingMoreZuJian: false // 上拉加载的时候，是否显示loading组件
+      showLoadingMoreZuJian: false, // 上拉加载的时候，是否显示loading组件
+      isSearchResultMove: true // 搜索页面加载出来数据后，是否需要滚动，如果滚动，在滚动之前隐藏手机键盘
     }
   },
   mounted () {
@@ -101,8 +104,11 @@ export default {
             finalArr = finalArr.concat(songObj)
           }
         }
-        if (finalArr.length <= 20) {
+        console.log(finalArr)
+        if (finalArr.length <= 19) {
           this.LoadingMore = false
+        } else {
+          this.$refs.bottomLoading.$el.style.display = 'block'
         }
         this.result = finalArr
         // console.log(this.result)
@@ -144,6 +150,7 @@ export default {
       })
     },
     // 点击搜索到的列表的某一项，跳转到歌手详情页或播放歌曲的页面
+    // 同时把点击的值，保存在vuex中的searchHistoryJiLu中，然后在历史组件中显示出来搜索记录
     goToSingerDetailOrPlaySong (item) {
       if (item.type === 'singer') {
         // 跳转到歌手详情页
@@ -183,6 +190,12 @@ export default {
         // 想vuex中的playlist和sequenceList数组中，插入点击的歌曲
         this.searchResultClickOneSongInsertAndToPlayPage(oneSongerObj)
       }
+      // 同时把输入框输入的值，保存在vuex中的searchHistoryJiLu中，然后在搜索历史组件中显示出来搜索记录
+      this.$emit('saveSearchHistory')
+    },
+    // 搜索页面加载出来数据后，是否需要滚动，如果滚动，在滚动之前隐藏手机键盘
+    myBeforeScrollStart () {
+      this.$emit('myBeforeScrollStart')
     }
   },
   watch: {
@@ -204,6 +217,7 @@ export default {
       // 每次请求前把，result变成空数组，是为了显示loading加载组件
       this.result = []
       this.$refs.dataSearchFinal.style.display = 'none'
+      this.$refs.bottomLoading.$el.style.display = 'none'
       // 搜索结果改变的时候，发起新的请求
       this.getSearch()
     }

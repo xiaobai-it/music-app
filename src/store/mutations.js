@@ -1,6 +1,7 @@
 import {SET_SINNER, SET_PLAYING, SET_FULLSCREEN,
   SET_PLAYLIST, SET_SEQUENCELIST, SET_MODE, SET_CURRENTINDEX,
-  SET_HOTGEDANTUIJIANDATAACTIONS, SET_ONETOPLIST} from './actions-types'
+  SET_HOTGEDANTUIJIANDATAACTIONS, SET_ONETOPLIST,
+  SET_SAVESEARCHHISTORYJILU} from './actions-types'
 
 const mutations = {
   [SET_SINNER] (state, {singerData}) {
@@ -29,6 +30,9 @@ const mutations = {
   },
   [SET_ONETOPLIST] (state, oneTopList) {
     state.oneTopList = oneTopList
+  },
+  [SET_SAVESEARCHHISTORYJILU] (state, searchHistoryArr) {
+    state.searchHistoryJiLu = searchHistoryArr
   }
 }
 export default mutations

@@ -386,7 +386,10 @@ export default {
       }
       this.touch.moveLenX = e.touches[0].pageX - this.touch.clickX
       this.touch.moveLenY = e.touches[0].pageY - this.touch.clickY
+      // console.log(this.touch.moveLenY, 'Y轴')
+      // console.log(this.touch.moveLenX)
       if (Math.abs(this.touch.moveLenY) > Math.abs(this.touch.moveLenX)) {
+        // console.log('不需要动')
         return
       }
       const left = this.currentShow === 'cd' ? 0 : -window.innerWidth

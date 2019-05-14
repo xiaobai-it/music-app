@@ -28,6 +28,10 @@ export default {
     isShangLaLoading: {// 搜索页面默认加载20条数据，该属性为true时，才可以下拉加载更多，这个属性是自定义属性，是组件传递过来的
       type: Boolean,
       default: false
+    },
+    isSearchResultMove: {// 搜索页面加载出来数据后，是否需要滚动，如果滚动，在滚动之前隐藏手机键盘，该属性是自定义属性，是组件传递过来的
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -56,6 +60,13 @@ export default {
             console.log('开始上拉加载')
             that.$emit('scrollToBottomLoadingMore')
           }
+        })
+      }
+      // 搜索页面加载出来数据后，是否需要滚动，如果滚动，在滚动之前隐藏手机键盘，该属性是自定义属性，是组件传递过来的
+      if (this.isSearchResultMove) {
+        let that = this // 保证回调函数是vue来调用
+        this.scroll.on('beforeScrollStart', () => {
+          that.$emit('myBeforeScrollStart')
         })
       }
     }, 20)
