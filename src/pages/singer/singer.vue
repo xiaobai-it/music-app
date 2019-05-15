@@ -9,6 +9,7 @@
 
 <script type="text/ecmascript-6">
 import {mapActions, mapState} from 'vuex'
+import PubSub from 'pubsub-js'
 
 import {getSingerList} from '../../api/allAPI'
 import Listview from '../../components/listview/listview'
@@ -23,6 +24,12 @@ export default {
     }
   },
   mounted() {
+    // 解决第一次mini播放器出来的时候，界面不能滚动的问题，事件是由tab组件传递过来的
+    PubSub.subscribe('clickSingerNav', (msg, data) => {
+      const bottom = this.playList.length > 0 ? '60px' : ''
+      this.$refs.singer.style.bottom = bottom
+      this.$refs.listviewzujian.listViewRefresh()
+    })
     this.loadingSingerData()
   },
   methods: {

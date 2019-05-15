@@ -15,7 +15,7 @@
       </li>
       <Loading title="正在加载中..." v-show="showLoadingMoreZuJian" ref="bottomLoading"/>
       <span class="dataSearchFinal" style="display: none" ref="dataSearchFinal">
-        ------------亲,这回真的到底了哦!------------
+        ------ 亲,这回真的到底了哦! ------
       </span>
     </ul>
     <Loading class="searchLoading" title="玩命加载中..." v-show="result.length === 0" ref="loading"/>
@@ -196,6 +196,10 @@ export default {
     // 搜索页面加载出来数据后，是否需要滚动，如果滚动，在滚动之前隐藏手机键盘
     myBeforeScrollStart () {
       this.$emit('myBeforeScrollStart')
+    },
+    // 解决mini播放器的自适应问题，父组件调用
+    myRefresh () {
+      this.$refs.suggest.refresh()
     }
   },
   watch: {

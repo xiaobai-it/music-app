@@ -1,9 +1,10 @@
 <template>
   <div class="search-list" v-show="searchHistoryJiLu.length > 0">
     <!--<transition-group name="list" tag="ul">-->
-    <li class="search-item" v-for="(item, index) in searchHistoryJiLu" :key="index">
+    <li class="search-item"
+        v-for="(item, index) in searchHistoryJiLu" :key="index" @click="clickOneSearchHistory(item,index)">
       <span class="text">{{item}}</span>
-      <span class="icon">
+      <span class="icon" @click.stop="deleteOneSearchHistory(item,index)">
         <i class="icon-delete"></i>
       </span>
     </li>
@@ -20,12 +21,14 @@ export default {
     }
   },
   methods: {
-    // selectItem(item) {
-    //   this.$emit('select', item)
-    // },
-    // deleteOne(item) {
-    //   this.$emit('delete', item)
-    // }
+    // 点击某一个搜索记录
+    clickOneSearchHistory(item, index) {
+      this.$emit('clickOneSearchHistory', item)
+    },
+    // 删除摸一个记录
+    deleteOneSearchHistory(item, index) {
+      this.$emit('deleteOneSearchHistory', item, index)
+    }
   }
 }
 </script>

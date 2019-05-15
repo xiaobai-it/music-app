@@ -48,6 +48,7 @@ import {getRecommend, getHotGeDan} from '../../api/allAPI'
 import Scroll from '../../components/scroll/scroll'
 import Loading from '../../components/loading/loading'
 import {mapState, mapActions} from 'vuex'
+import PubSub from 'pubsub-js'
 
 export default {
   components: {
@@ -78,6 +79,12 @@ export default {
     ...mapState(['fullScreen'])
   },
   mounted() {
+    // 解决第一次mini播放器出来的时候，界面不能滚动的问题，事件是由tab组件传递过来的
+    PubSub.subscribe('clickRecommendNav', (msg, data) => {
+      const bottom = !this.fullScreen ? '60px' : '0'
+      this.$refs.recommend.style.bottom = bottom
+      this.$refs.lunboDiv.refresh()
+    })
     // 获取轮播图的图片
     getRecommend().then((response) => {
       if (response.code === 0) {
@@ -121,9 +128,6 @@ export default {
     // 监视playList歌曲数组的变化，如果数组长度大于0，让其最外面的div的bottom为60，解决迷你播放器和页面的自适应
     fullScreen () {
       // scroll滚动没有反应，于是监视fullScreen的状态改变 ，应该是swiper 和scroll 的冲突问题，待处理？？？？？？
-      // const bottom = this.playList.length > 0 ? '60px' : ''
-      // this.$refs.lunboDiv.refresh()
-      // this.$refs.recommend.style.bottom = bottom
       // 还是有问题，第一次显示mini播放器，推荐界面根本不滚动？？？？
       const bottom = !this.fullScreen ? '60px' : '0'
       this.$refs.recommend.style.bottom = bottom

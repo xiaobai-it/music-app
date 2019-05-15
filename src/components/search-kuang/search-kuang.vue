@@ -57,6 +57,7 @@ export default {
   watch: {
     // query () {
     //   // 输入框的数据改变的时候，发送输入的数据query 给search-result组件
+    //   // 为了实现节流函数的效果，所以把监听query改变的状态写在了montend里面
     //   this.$emit('queryValue', this.query)
     // }
   }

@@ -30,3 +30,21 @@ export function getSearchHistoryFromLocalStroage() {
   const getSearchHistory = goodStoroge.get('mySearchHistory', [])
   return getSearchHistory
 }
+// 在vuex中的searchHistoryJiLu和本地缓存localstorage中，删除一条搜索记录
+export function deleteOneSearchHistoryJiLU(delateItem, index) {
+  // 获取本地缓存的值
+  let finalSearch = goodStoroge.get('mySearchHistory', [])
+  // 删除一条记录
+  finalSearch.splice(index, 1)
+  // 把删除后的搜索记录保存到本地缓存的mySearchHistory数组中
+  goodStoroge.set('mySearchHistory', finalSearch)
+
+  return finalSearch // 返回是搜索记录的数组
+}
+// 在vuex中的searchHistoryJiLu和本地缓存localstorage中，删除所有搜索记录
+export function deleteAllSearchHistoryJiLU() {
+  // 删除所有本地缓存的值
+  goodStoroge.remove('mySearchHistory')
+
+  return [] // 返回vuex一个空数组
+}

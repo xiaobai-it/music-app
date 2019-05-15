@@ -29,6 +29,7 @@ import Loading from '../../components/loading/loading'
 import {getTopLst} from '../../api/allAPI'
 import Scroll from '../../components/scroll/scroll'
 import {mapState, mapActions} from 'vuex'
+import PubSub from 'pubsub-js'
 
 export default {
   components: {
@@ -41,10 +42,16 @@ export default {
     }
   },
   mounted() {
+    // 解决第一次mini播放器出来的时候，界面不能滚动的问题，事件是由tab组件传递过来的
+    PubSub.subscribe('clickRankNav', (msg, data) => {
+      const bottom = !this.fullScreen ? '60px' : ''
+      this.$refs.rank.style.bottom = bottom
+      this.$refs.scroll.refresh()
+    })
     // 获取排行首页界面的后台数据
     getTopLst().then((response) => {
       if (response.data.code === 0) {
-        console.log(response.data.data.topList)
+        // console.log(response.data.data.topList)
         this.topList = response.data.data.topList
       }
     }).catch((err) => {
@@ -64,8 +71,7 @@ export default {
     }
   },
   watch: {
-    // 监视playList歌曲数组的变化，如果数组长度大于0，让其最外面的div的bottom为60，解决迷你播放器和页面的自适应
-    // scroll滚动没有反应，于是监视fullScreen的状态改变 ，应该是swiper 和scroll 的冲突问题，待处理？？？？？？
+    // 监视mini播放器是否显示，解决迷你播放器和页面的自适应
     fullScreen () {
       const bottom = !this.fullScreen ? '60px' : ''
       this.$refs.rank.style.bottom = bottom

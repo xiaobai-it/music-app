@@ -4,7 +4,7 @@ import {SET_SINNER, SET_PLAYING, SET_FULLSCREEN,
   SET_SAVESEARCHHISTORYJILU} from './actions-types'
 import {playMode} from '../common/js/playModeConfig'
 import {songsRandomPaiXu} from '../common/js/songsRandomPaiXu'
-import {saveSearchHistory} from '../common/js/all-search-history'
+import {saveSearchHistory, deleteOneSearchHistoryJiLU, deleteAllSearchHistoryJiLU} from '../common/js/all-search-history'
 
 const actions = {
   setSinger ({commit, state}, singerData) {
@@ -120,6 +120,18 @@ const actions = {
     const searchHistoryArr = saveSearchHistory(searchValue)
     // 提交搜索记录
     commit(SET_SAVESEARCHHISTORYJILU, searchHistoryArr)
+  },
+  // 在vuex中的searchHistoryJiLu和本地缓存localstorage中，删除一条搜索记录
+  deleteOneSearchHistoryJiLU ({commit, sate}, delateItem, index) {
+    // 删除一条历史记录
+    const deleteAfterHistoryArr = deleteOneSearchHistoryJiLU(delateItem, index)
+    // 提交搜索记录
+    commit(SET_SAVESEARCHHISTORYJILU, deleteAfterHistoryArr)
+  },
+  // 在vuex中的searchHistoryJiLu和本地缓存localstorage中，删除全部搜索记录
+  deleteAllSearchHistoryJiLU ({commit, sate}) {
+    const deleteAfterHistoryArr = deleteAllSearchHistoryJiLU()
+    commit(SET_SAVESEARCHHISTORYJILU, deleteAfterHistoryArr)
   }
 }
 export default actions

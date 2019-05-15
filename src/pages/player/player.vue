@@ -16,7 +16,9 @@
           <h2 class="subtitle">{{currentSong.singer}}</h2>
         </div>
         <div class="middle"
-             @touchstart="touchStartLyric" @touchmove="touchMoveLyric" @touchend="touchEndLyric">
+             @touchstart.stop.prevent="touchStartLyric"
+             @touchmove.prevent="touchMoveLyric"
+             @touchend="touchEndLyric">
           <div class="middle-l" >
             <div class="cd-wrapper" ref="cdWrapper">
               <div class="cd" :class="changeImgrotate" >
@@ -136,7 +138,7 @@ export default {
       songReady: false,
       currentTime: 0,
       // radius: 32,
-      currentLyric: null,
+      currentLyric: null, // 大界面的歌词
       currentLyricLineNum: 0,
       currentShow: 'cd',
       touch: {}, // 歌词左右滑动的时候，滑动的默认参数
@@ -179,13 +181,13 @@ export default {
     },
     // 显示全屏播放器
     showFullScreenPlay() {
-      console.log('点击了')
+      // console.log('点击了')
       this.setFullscreen(true)
     },
     // 全屏播放器的css动画
     enter(el, done) {
       const {x, y, scale} = this.myGetPositionAndScale()
-      console.log('显示全屏时候的xy：', x, y)
+      // console.log('显示全屏时候的xy：', x, y)
       let animation = {
         0: {
           transform: `translate3d(${x}px, ${y}px, 0) scale(${scale})`
@@ -219,7 +221,7 @@ export default {
     // 全屏播放器的css动画
     leave(el, done) {
       const {x, y, scale} = this.myGetPositionAndScale()
-      console.log('显示小屏时候的xy：', x, y)
+      // console.log('显示小屏时候的xy：', x, y)
       this.$refs.cdWrapper.style.transaction = 'all 0.4s'
       this.$refs.cdWrapper.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${scale})`
       this.$refs.cdWrapper.addEventListener('transitionend', done)
@@ -278,6 +280,9 @@ export default {
       // 歌曲数组只有一首歌的情况,调用循环播放loop()函数,同时把播放模式变成单曲循环实现，单曲循环
       if (this.playList.length === 1) {
         this.setMode(playMode.loop)
+        this.loop()
+      } else if (this.mode === playMode.loop) {
+        // 循环播放
         this.loop()
       } else {
         let index = this.currentIndex + 1
@@ -363,7 +368,7 @@ export default {
     handlerLyric ({lineNum, txt}) {
       // 是第三方库lyric-parser中，new Lyric后的回调函数，lineNum是歌词的所在行, txt是歌词文本，是默认的2个参数
       this.currentLyricLineNum = lineNum
-      this.showBuFenPlayingLyric = txt
+      this.showBuFenPlayingLyric = txt // 当前正在播放的歌词
       // 当前的歌词的行数大于6行，需要进行滚动，保证当前歌词在屏幕的中心
       if (lineNum > 6) {
         // 需要滚动到第几行的p标签
@@ -443,7 +448,7 @@ export default {
       if (newSong.id === oldSong.id) {
         return
       }
-      console.log('歌曲改变了')
+      // console.log('歌曲改变了')
       // 解决连续点击下一首歌曲，出现的歌词回跳的问题
       if (this.currentLyric) {
         this.currentLyric.stop()
@@ -458,6 +463,7 @@ export default {
               let formatLyric = Base64.decode(response.data.lyric)
               this.currentLyric = new Lyric(formatLyric, this.handlerLyric)
               if (this.playing) {
+                console.log('歌曲开始播放了，可以播放歌词了')
                 this.currentLyric.play() // play()是第三方库lyric-parser提供的方法,播放歌词用的
               }
             }
@@ -469,14 +475,13 @@ export default {
             this.currentLyricLineNum = 0
             this.showBuFenPlayingLyric = ''
           })
-        // 播放器开始播放
-        this.$refs.audio.play()
-      }, 500)
+        this.$refs.audio.play() // 播放器开始播放
+      }, 1500)
     },
     // 播放状态改变的时候，按钮变换图片，同时歌曲暂停或播放
     playing() {
       this.$nextTick(() => {
-        console.log('歌曲改变了')
+        // console.log('歌曲改变了')
         this.playing ? this.$refs.audio.play() : this.$refs.audio.pause()
       })
     }
