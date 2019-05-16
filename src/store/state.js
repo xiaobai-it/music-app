@@ -11,6 +11,6 @@ const state = {
   currentIndex: -1, // 当前歌曲播的索引,当前播放的歌曲（currentSong），通过vuex的计算属性getters获取
   oneHotGeDanTuiJianData: {}, // 推荐首页界面中,某一个热门歌单推荐的数据
   oneTopList: {}, // 排行首页界面中,某一个排行的数据
-  searchHistoryJiLu: getSearchHistoryFromLocalStroage() // 搜索的历史记录，只保留10条，多余的全部删除,应该从本地缓存中读取数据，否则一刷新，初始数据始终为0
+  searchHistoryJiLu: getSearchHistoryFromLocalStroage() // 搜索的历史记录，只留10条，多余的全部删除,从本地缓存中读取数据，否则一刷新，初始数据始终为0
 }
 export default state

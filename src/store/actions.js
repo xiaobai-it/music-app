@@ -122,9 +122,9 @@ const actions = {
     commit(SET_SAVESEARCHHISTORYJILU, searchHistoryArr)
   },
   // 在vuex中的searchHistoryJiLu和本地缓存localstorage中，删除一条搜索记录
-  deleteOneSearchHistoryJiLU ({commit, sate}, delateItem, index) {
+  deleteOneSearchHistoryJiLU ({commit, sate}, {delateItem, index}) {
     // 删除一条历史记录
-    const deleteAfterHistoryArr = deleteOneSearchHistoryJiLU(delateItem, index)
+    const deleteAfterHistoryArr = deleteOneSearchHistoryJiLU({delateItem, index})
     // 提交搜索记录
     commit(SET_SAVESEARCHHISTORYJILU, deleteAfterHistoryArr)
   },

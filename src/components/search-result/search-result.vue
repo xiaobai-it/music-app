@@ -104,7 +104,6 @@ export default {
             finalArr = finalArr.concat(songObj)
           }
         }
-        console.log(finalArr)
         if (finalArr.length <= 19) {
           this.LoadingMore = false
         } else {
@@ -113,7 +112,7 @@ export default {
         this.result = finalArr
         // console.log(this.result)
       }).catch((err) => {
-        console.log(err)
+        console.log('搜索结果出现问题', err)
       })
     },
     // 上拉加载更更多数据

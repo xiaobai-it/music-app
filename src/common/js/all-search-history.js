@@ -27,12 +27,11 @@ export function saveSearchHistory(searchValue) {
 }
 // vuex初始化的时候，获取之前本地已经存储的搜索记录
 export function getSearchHistoryFromLocalStroage() {
-  const getSearchHistory = goodStoroge.get('mySearchHistory', [])
-  return getSearchHistory
+  return goodStoroge.get('mySearchHistory', [])
 }
 // 在vuex中的searchHistoryJiLu和本地缓存localstorage中，删除一条搜索记录
-export function deleteOneSearchHistoryJiLU(delateItem, index) {
-  // 获取本地缓存的值
+export function deleteOneSearchHistoryJiLU({delateItem, index}) {
+  // 读取本地缓存的值
   let finalSearch = goodStoroge.get('mySearchHistory', [])
   // 删除一条记录
   finalSearch.splice(index, 1)

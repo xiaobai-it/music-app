@@ -99,13 +99,13 @@
             <i class="icon-mini" :class="changeMiniPalyImg" @click.stop="togglePlayStatue" ></i>
           </miniProgressBar>
         </div>
-        <div class="control" >
+        <div class="control" @click.stop="showMiniPlaylist">
           <i class="icon-playlist"></i>
         </div>
       </div>
     </transition>
-    <!--playlist组件-->
-    <!--<playlist></playlist>-->
+    <!--mini-playlist mini播放器的列表组件-->
+    <MiniPlaylist ref="MiniPlaylist"/>
     <!--播放器按钮-->
     <audio :src="currentSong.url" ref="audio"
            @canplay="audioCanPlay"
@@ -126,12 +126,14 @@ import {playMode} from '../../common/js/playModeConfig'
 import {songsRandomPaiXu} from '../../common/js/songsRandomPaiXu'
 import {getLyric} from '../../api/allAPI'
 import Scroll from '../../components/scroll/scroll'
+import MiniPlaylist from '../../components/mini-playlist/mini-playlist'
 
 export default {
   components: {
     ProgressBar,
     miniProgressBar,
-    Scroll
+    Scroll,
+    MiniPlaylist
   },
   data() {
     return {
@@ -174,6 +176,10 @@ export default {
   },
   methods: {
     ...mapActions(['setFullscreen', 'setPlaying', 'setCurrentindex', 'setMode', 'setPlaylist']),
+    // 显示迷你播放器的播放列表
+    showMiniPlaylist () {
+      this.$refs.MiniPlaylist.show()
+    },
     // 显示模拟播放器
     showMiniPlay() {
       this.setFullscreen(false)

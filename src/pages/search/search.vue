@@ -16,14 +16,16 @@
               </li>
             </ul>
           </div>
-          <div class="search-history" v-show="searchHistoryJiLu.length > 0">
+          <!--<div class="search-history" v-show="searchHistoryJiLu.length > 0">-->
+          <div class="search-history" v-show="searchHistoryJiLu">
+          <!--<div class="search-history" v-if="searchHistoryJiLu">-->
             <h1 class="title">
-          <span class="text">
-            搜索历史 {{searchHistoryJiLu ?searchHistoryJiLu.length : '0'}} / 10
-          </span>
-          <span class="clear" @click.stop="deleteAllSearchHistory">
-            <i class="icon-clear"></i>
-          </span>
+              <span class="text">
+                搜索历史 {{searchHistoryJiLu.length > 0 ? searchHistoryJiLu.length : '0'}} / 10
+              </span>
+              <span class="clear" @click.stop="deleteAllSearchHistory">
+                <i class="icon-clear"></i>
+              </span>
             </h1>
             <!--显示搜索历史的组件-->
             <SearchHistoryList :searchHistoryJiLu="searchHistoryJiLu"
@@ -78,7 +80,7 @@ export default {
       this.$refs.shortcutWrapper.style.bottom = bottom
       this.$refs.shortcut.refresh()
     })
-    // 获取搜索首页下的热门搜索内的的后台数据的函数
+    // 获取搜索首页下的热门搜索内的后台数据的函数
     getHotKey().then((response) => {
       if (response.code === 0) {
         this.hotKey = response.data.hotkey.slice(0, 10)
@@ -88,9 +90,9 @@ export default {
     })
   },
   computed: {
-    ...mapState(['searchHistoryJiLu', 'searchHistoryJiLu', 'fullScreen']),
+    ...mapState(['searchHistoryJiLu', 'fullScreen']),
     shortcut () {
-      return this.hotKey.concat(this.showSearchResult)
+      return this.hotKey.concat(this.searchHistoryJiLu)
     }
   },
   methods: {
@@ -119,10 +121,9 @@ export default {
       this.$refs.searchkuang.andSearchToInput(item)
     },
     // 删除某一个记录
-    deleteOneSearchHistory(delateItem, index) {
+    deleteOneSearchHistory({delateItem, index}) {
       // 调用vuex中的actions.js文件中的方法，删除点击的历史记录
-      console.log(delateItem, index)
-      this.deleteOneSearchHistoryJiLU(delateItem, index)
+      this.deleteOneSearchHistoryJiLU({delateItem, index})
     },
     // 打开确认框
     deleteAllSearchHistory () {
