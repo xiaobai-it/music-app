@@ -1,7 +1,7 @@
 <template>
   <div class="search-list" v-show="searchHistoryJiLu">
   <!--<div class="search-list" v-if="searchHistoryJiLu">-->
-    <!--<transition-group name="list" tag="ul">-->
+    <transition-group name="list" tag="ul">
     <li class="search-item"
         v-for="(item, index) in searchHistoryJiLu" :key="index" @click="clickOneSearchHistory(item,index)">
       <span class="text">{{item}}</span>
@@ -9,7 +9,7 @@
         <i class="icon-delete"></i>
       </span>
     </li>
-    <!--</transition-group>-->
+    </transition-group>
   </div>
 </template>
 

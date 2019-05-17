@@ -132,6 +132,44 @@ const actions = {
   deleteAllSearchHistoryJiLU ({commit, sate}) {
     const deleteAfterHistoryArr = deleteAllSearchHistoryJiLU()
     commit(SET_SAVESEARCHHISTORYJILU, deleteAfterHistoryArr)
+  },
+  // 在mini播放器列表中,删除点击的歌曲一首
+  atMiniPlayListDeleteOneSinger ({commit, state}, item) {
+    let playList = state.playList.slice()
+    let sequenceList = state.sequenceList.slice()
+    let currentIndex = state.currentIndex
+
+    // 根据索引把playList中对应的歌曲删除
+    let playListIndex = playList.findIndex((playListItem) => {
+      return playListItem.id === item.id
+    })
+    playList.splice(playListIndex, 1)
+    // 根据索引把sequenceList中对应的歌曲删除
+    let sequenceListIndex = sequenceList.findIndex((sequenceListItem) => {
+      return sequenceListItem.id === item.id
+    })
+    sequenceList.splice(sequenceListIndex, 1)
+
+    if (currentIndex > playListIndex || currentIndex === playList.length) {
+      currentIndex--
+    }
+
+    commit(SET_PLAYLIST, {musicData: playList})
+    commit(SET_SEQUENCELIST, {musicData: sequenceList})
+    commit(SET_CURRENTINDEX, {index: currentIndex})
+
+    if (!playList.length) {
+      commit(SET_PLAYING, false)
+    } else {
+      commit(SET_PLAYING, true)
+    }
+  },
+  // 清空mini播放器列表中的全部数据
+  clearMiniPlayLieBiaoData ({commit, state}) {
+    commit(SET_PLAYLIST, {musicData: []})
+    commit(SET_SEQUENCELIST, {musicData: []})
+    commit(SET_CURRENTINDEX, {index: -1})
+    commit(SET_PLAYING, false)
   }
 }
 export default actions

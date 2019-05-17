@@ -17,7 +17,7 @@
             </ul>
           </div>
           <!--<div class="search-history" v-show="searchHistoryJiLu.length > 0">-->
-          <div class="search-history" v-show="searchHistoryJiLu">
+          <div class="search-history" v-show="searchHistoryJiLu.length">
           <!--<div class="search-history" v-if="searchHistoryJiLu">-->
             <h1 class="title">
               <span class="text">
@@ -92,6 +92,7 @@ export default {
   computed: {
     ...mapState(['searchHistoryJiLu', 'fullScreen']),
     shortcut () {
+      console.log(this.searchHistoryJiLu)
       return this.hotKey.concat(this.searchHistoryJiLu)
     }
   },

@@ -73,7 +73,7 @@
               <i class="icon-next" @click="nextSongs"></i>
             </div>
             <div class="icon i-right">
-              <i class="icon" ></i>
+              <i class="icon icon-not-favorite" ></i>
             </div>
           </div>
         </div>
@@ -81,7 +81,7 @@
     </transition>
     <!--迷你播放器-->
     <transition name="mini">
-      <div class="mini-player"  v-show="!fullScreen" @click="showFullScreenPlay">
+      <div class="mini-player"  v-show="!fullScreen && playList.length " @click="showFullScreenPlay">
         <div class="icon">
           <img  width="40" height="40" v-lazy="currentSong.image" :class="changeImgrotate">
         </div>
@@ -178,6 +178,7 @@ export default {
     ...mapActions(['setFullscreen', 'setPlaying', 'setCurrentindex', 'setMode', 'setPlaylist']),
     // 显示迷你播放器的播放列表
     showMiniPlaylist () {
+      console.log('xinahsiminibofangqi')
       this.$refs.MiniPlaylist.show()
     },
     // 显示模拟播放器
@@ -450,6 +451,9 @@ export default {
   watch: {
     // 歌曲改变的时候，调用audio标签自带的play()方法
     currentSong(newSong, oldSong) {
+      if (!newSong.id) {
+        return
+      }
       // newSong, oldSong 是watch对象里面的方法中，自带的2个默认值，第一个值是newValue 第二个值是oldValue
       if (newSong.id === oldSong.id) {
         return

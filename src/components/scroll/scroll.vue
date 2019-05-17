@@ -93,7 +93,7 @@ export default {
       // 监视传递过来的属性data的变化，一但变化，就自动刷新滚动
       setTimeout(() => {
         this.refresh()
-      })
+      }, 20)
     }
   }
 }
