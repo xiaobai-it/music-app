@@ -1,5 +1,5 @@
 import {playMode} from '../common/js/playModeConfig' // 播放器的播放模式配置
-import {getSearchHistoryFromLocalStroage} from '../common/js/all-search-history' // vuex初始化的时候，获取之前本地已经存储的搜索记录
+import {getSearchHistoryFromLocalStroage, getSavePlaySongsRecently} from '../common/js/all-search-history' // vuex初始化的时候，获取之前本地已经存储的搜索记录
 
 const state = {
   singer: {}, // 歌手数据
@@ -11,6 +11,7 @@ const state = {
   currentIndex: -1, // 当前歌曲播的索引,当前播放的歌曲（currentSong），通过vuex的计算属性getters获取
   oneHotGeDanTuiJianData: {}, // 推荐首页界面中,某一个热门歌单推荐的数据
   oneTopList: {}, // 排行首页界面中,某一个排行的数据
-  searchHistoryJiLu: getSearchHistoryFromLocalStroage() // 搜索的历史记录，只留10条，多余的全部删除,从本地缓存中读取数据，否则一刷新，初始数据始终为0
+  searchHistoryJiLu: getSearchHistoryFromLocalStroage(), // 搜索的历史记录，只留10条，多余的全部删除,从本地缓存中读取数据，否则一刷新，初始数据始终为0
+  savePlaySongsRecently: getSavePlaySongsRecently() // 保存最近播歌曲的数组，只保留50条多的删除
 }
 export default state

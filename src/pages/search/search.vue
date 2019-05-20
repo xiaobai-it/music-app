@@ -27,7 +27,7 @@
                 <i class="icon-clear"></i>
               </span>
             </h1>
-            <!--显示搜索历史的组件-->
+            <!--显示搜索历史记录的组件-->
             <SearchHistoryList :searchHistoryJiLu="searchHistoryJiLu"
                                @clickOneSearchHistory="clickOneSearchHistory"
                                @deleteOneSearchHistory="deleteOneSearchHistory"/>

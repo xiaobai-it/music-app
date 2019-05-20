@@ -207,6 +207,10 @@ export default {
     // search组件设置一个变量showSearchResult接收传递过来的搜索值，然后把变量showSearchResult当成属性传递给search0result组件
     // search0result接收showSearchResult属性并且监视这个属性值的改变，然后调用getSearchResult方法获取搜索数据
     showSearchResult () {
+      // if (this.showSearchResult === '') {
+      //   this.LoadingMore = false
+      //   return
+      // }
       // 控制搜索结果页面的显示、隐藏
       if (this.showSearchResult === '') {
         this.$refs.suggest.$el.style.display = 'none'

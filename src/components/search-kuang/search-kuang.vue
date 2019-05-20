@@ -24,7 +24,7 @@ export default {
   },
   mounted () {
     this.$watch('query', this.jieLiuFunc((newQuery) => {
-      // 输入框的数据改变的时候，发送输入的数据query 给search-result组件
+      // 输入框的数据改变的时候，发送输入的数据query 给父组件search-result组件
       this.$emit('queryValue', newQuery)
     }, 300))
   },

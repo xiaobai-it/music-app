@@ -137,7 +137,7 @@ export default {
   },
   data() {
     return {
-      songReady: false,
+      songReady: false, // 歌曲是否已经加载完成
       currentTime: 0,
       // radius: 32,
       currentLyric: null, // 大界面的歌词
@@ -175,10 +175,10 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setFullscreen', 'setPlaying', 'setCurrentindex', 'setMode', 'setPlaylist']),
+    ...mapActions(['setFullscreen', 'setPlaying',
+      'setCurrentindex', 'setMode', 'setPlaylist', 'saveTheSongsRecently']),
     // 显示迷你播放器的播放列表
     showMiniPlaylist () {
-      console.log('xinahsiminibofangqi')
       this.$refs.MiniPlaylist.show()
     },
     // 显示模拟播放器
@@ -317,8 +317,11 @@ export default {
         this.nextSongs()
       }
     },
+    // 歌曲已经准备好，可以播放了
     audioCanPlay () {
       this.songReady = true
+      // 把点击的歌曲保存到【最近播放】的组件中
+      this.saveTheSongsRecently(this.currentSong)
     },
     audioError () {
       // 歌曲加载失败的时候

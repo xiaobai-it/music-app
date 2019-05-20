@@ -29,7 +29,7 @@
           </transition-group>
         </Scroll>
         <div class="list-operate">
-          <div class="add" @click.stop="addSongToAnotherPage">
+          <div class="add" @click.stop="addSongToAnotherPage" ref="add">
             <i class="icon-add"></i>
             <span class="text">添加歌曲到队列</span>
           </div>
@@ -294,6 +294,8 @@ export default {
           border: 1px solid $color-text-l
           border-radius: 100px
           color: $color-text-l
+          &:hover
+            opacity : .5
           .icon-add
             margin-right: 5px
             font-size: $font-size-small-s

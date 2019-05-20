@@ -20,11 +20,11 @@
 <script>
 export default {
   props: {
-    musicData: {
+    musicData: { // 歌曲列表数组
       type: Array,
       default: null
     },
-    rank: {
+    rank: { // 是否显示左侧排名
       type: Boolean,
       default: false
     }

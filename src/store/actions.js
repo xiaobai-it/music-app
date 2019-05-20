@@ -1,10 +1,11 @@
 import {SET_SINNER, SET_PLAYING, SET_FULLSCREEN,
   SET_PLAYLIST, SET_SEQUENCELIST, SET_CURRENTINDEX, SET_MODE,
   SET_HOTGEDANTUIJIANDATAACTIONS, SET_ONETOPLIST,
-  SET_SAVESEARCHHISTORYJILU} from './actions-types'
+  SET_SAVESEARCHHISTORYJILU, SET_SAVETHESONGSRECENTLY} from './actions-types'
 import {playMode} from '../common/js/playModeConfig'
 import {songsRandomPaiXu} from '../common/js/songsRandomPaiXu'
-import {saveSearchHistory, deleteOneSearchHistoryJiLU, deleteAllSearchHistoryJiLU} from '../common/js/all-search-history'
+import {saveSearchHistory, deleteOneSearchHistoryJiLU,
+  deleteAllSearchHistoryJiLU, savePlaySongsRecently} from '../common/js/all-search-history'
 
 const actions = {
   setSinger ({commit, state}, singerData) {
@@ -170,6 +171,11 @@ const actions = {
     commit(SET_SEQUENCELIST, {musicData: []})
     commit(SET_CURRENTINDEX, {index: -1})
     commit(SET_PLAYING, false)
+  },
+  // 把点击的歌曲保存到【最近播放】的组件中
+  saveTheSongsRecently ({commit, state}, currentPlaySong) {
+    let finalSongsRecently = savePlaySongsRecently(currentPlaySong)
+    commit(SET_SAVETHESONGSRECENTLY, finalSongsRecently)
   }
 }
 export default actions
