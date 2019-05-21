@@ -81,9 +81,11 @@ export default {
   mounted() {
     // 解决第一次mini播放器出来的时候，界面不能滚动的问题，事件是由tab组件传递过来的
     PubSub.subscribe('clickRecommendNav', (msg, data) => {
-      const bottom = !this.fullScreen ? '60px' : '0'
-      this.$refs.recommend.style.bottom = bottom
-      this.$refs.lunboDiv.refresh()
+      setTimeout(() => {
+        const bottom = !this.fullScreen ? '60px' : '0'
+        this.$refs.recommend.style.bottom = bottom
+        this.$refs.lunboDiv.refresh()
+      }, 20)
     })
     // 获取轮播图的图片
     getRecommend().then((response) => {

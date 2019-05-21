@@ -32,6 +32,10 @@ export default {
     isSearchResultMove: {// 搜索页面加载出来数据后，是否需要滚动，如果滚动，在滚动之前隐藏手机键盘，该属性是自定义属性，是组件传递过来的
       type: Boolean,
       default: false
+    },
+    sleepRefresh: {// 上面 data属性的值发生改变的时候，重新调用scroll的refresh方法的时间
+      type: Number,
+      default: 20
     }
   },
   data() {
@@ -93,7 +97,7 @@ export default {
       // 监视传递过来的属性data的变化，一但变化，就自动刷新滚动
       setTimeout(() => {
         this.refresh()
-      }, 20)
+      }, this.sleepRefresh)
     }
   }
 }

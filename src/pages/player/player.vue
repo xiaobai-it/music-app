@@ -59,6 +59,7 @@
             <span class="time time-r">{{formatTime(currentSong.duration)}}</span>
           </div>
           <div class="operators">
+            <!--播放模式-->
             <div class="icon i-left" @click="choosePlayMode">
               <i :class="changePalyMode"></i>
             </div>
@@ -72,8 +73,9 @@
             <div class="icon i-right" :class="disableClass">
               <i class="icon-next" @click="nextSongs"></i>
             </div>
-            <div class="icon i-right">
-              <i class="icon icon-not-favorite" ></i>
+            <!--收藏按钮-->
+            <div class="icon i-right" @click="clickCollectionOrQuXiaoCollectionSong(currentSong)">
+              <i class="icon icon-not-favorite" :class="changeCollectionStyle(currentSong)" ></i>
             </div>
           </div>
         </div>
@@ -148,7 +150,9 @@ export default {
     }
   },
   computed: {
-    ...mapState(['fullScreen', 'playList', 'sequenceList', 'playing', 'currentIndex', 'mode']),
+    ...mapState(['fullScreen', 'playList',
+      'sequenceList', 'playing',
+      'currentIndex', 'mode', 'saveCollectionOrQuXiaoCollectionSong']),
     ...mapGetters(['currentSong']),
     // 改变播放模式
     changePalyMode () {
@@ -176,7 +180,9 @@ export default {
   },
   methods: {
     ...mapActions(['setFullscreen', 'setPlaying',
-      'setCurrentindex', 'setMode', 'setPlaylist', 'saveTheSongsRecently']),
+      'setCurrentindex', 'setMode',
+      'setPlaylist', 'saveTheSongsRecently',
+      'saveCollectionSongs', 'deleteCollectionSongs']),
     // 显示迷你播放器的播放列表
     showMiniPlaylist () {
       this.$refs.MiniPlaylist.show()
@@ -449,6 +455,27 @@ export default {
       this.$refs.cdWrapper.style.transition = `all .3s linear`
       this.$refs.buFenLyric.style.opacity = opacity
       this.$refs.buFenLyric.style.transition = `all .3s linear`
+    },
+    // 点击收藏或者取消收藏歌曲
+    clickCollectionOrQuXiaoCollectionSong(currentSong) {
+      let index = this.saveCollectionOrQuXiaoCollectionSong.findIndex((item) => {
+        return item.id === currentSong.id
+      })
+      // index !== -1 说明当前歌曲已经收藏了，这时候需要删除当前歌曲的收藏
+      if (index !== -1) {
+        this.deleteCollectionSongs(currentSong)
+      } else {
+        // index === -1 说明当前歌曲没有收藏，这时候需要收藏当前歌曲
+        this.saveCollectionSongs(currentSong)
+      }
+    },
+    // 改变收藏和取消收藏的样式
+    changeCollectionStyle (currentSong) {
+      let index = this.saveCollectionOrQuXiaoCollectionSong.findIndex((item) => {
+        return item.id === currentSong.id
+      })
+      // index !== -1 说明当前歌曲已经收藏了
+      return index !== -1 ? 'icon-favorite': 'icon-not-favorite'
     }
   },
   watch: {
@@ -475,7 +502,8 @@ export default {
               // 得到的歌词是base64格式的字符串，需要用第三方库js-base64先解码,在用第三方库lyric-parser,格式化歌词
               let formatLyric = Base64.decode(response.data.lyric)
               this.currentLyric = new Lyric(formatLyric, this.handlerLyric)
-              if (this.playing) {
+              // if (this.playing) {
+              if (this.songReady === true) {
                 console.log('歌曲开始播放了，可以播放歌词了')
                 this.currentLyric.play() // play()是第三方库lyric-parser提供的方法,播放歌词用的
               }

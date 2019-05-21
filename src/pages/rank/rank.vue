@@ -44,9 +44,11 @@ export default {
   mounted() {
     // 解决第一次mini播放器出来的时候，界面不能滚动的问题，事件是由tab组件传递过来的
     PubSub.subscribe('clickRankNav', (msg, data) => {
-      const bottom = !this.fullScreen ? '60px' : ''
-      this.$refs.rank.style.bottom = bottom
-      this.$refs.scroll.refresh()
+      setTimeout(() => {
+        const bottom = !this.fullScreen ? '60px' : ''
+        this.$refs.rank.style.bottom = bottom
+        this.$refs.scroll.refresh()
+      }, 20)
     })
     // 获取排行首页界面的后台数据
     getTopLst().then((response) => {

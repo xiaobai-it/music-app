@@ -10,7 +10,7 @@
             <span class="clear" @click="clearMiniPlayLieBiao"><i class="icon-clear"></i></span>
           </h1>
         </div>
-        <Scroll class="list-content" :data="sequenceList" ref="listContent">
+        <Scroll class="list-content" :data="sequenceList" :sleepRefresh="sleepRefresh" ref="listContent">
           <transition-group name="list" tag="ul">
             <li class="item" v-for="(item, index) in sequenceList"
                 :key="index" @click="playClickSong(item, index)" ref="currentPlaysongBiaoQian">
@@ -61,7 +61,8 @@ export default {
   },
   data() {
     return {
-      showMiniPlayList: false // 是否显示迷你播放器的播放列表
+      showMiniPlayList: false, // 是否显示迷你播放器的播放列表
+      sleepRefresh: 100 // scroll组件调用refresh方法的延时时间
     }
   },
   computed: {

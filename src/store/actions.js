@@ -1,11 +1,13 @@
 import {SET_SINNER, SET_PLAYING, SET_FULLSCREEN,
   SET_PLAYLIST, SET_SEQUENCELIST, SET_CURRENTINDEX, SET_MODE,
   SET_HOTGEDANTUIJIANDATAACTIONS, SET_ONETOPLIST,
-  SET_SAVESEARCHHISTORYJILU, SET_SAVETHESONGSRECENTLY} from './actions-types'
+  SET_SAVESEARCHHISTORYJILU, SET_SAVETHESONGSRECENTLY,
+  SET_SAVECOLLECTIONSONG, SET_DELETECOLLECTIONSONG} from './actions-types'
 import {playMode} from '../common/js/playModeConfig'
 import {songsRandomPaiXu} from '../common/js/songsRandomPaiXu'
 import {saveSearchHistory, deleteOneSearchHistoryJiLU,
-  deleteAllSearchHistoryJiLU, savePlaySongsRecently} from '../common/js/all-search-history'
+  deleteAllSearchHistoryJiLU, savePlaySongsRecently,
+  saveCollectionSong, deleteCollectionSong} from '../common/js/all-search-history'
 
 const actions = {
   setSinger ({commit, state}, singerData) {
@@ -176,6 +178,16 @@ const actions = {
   saveTheSongsRecently ({commit, state}, currentPlaySong) {
     let finalSongsRecently = savePlaySongsRecently(currentPlaySong)
     commit(SET_SAVETHESONGSRECENTLY, finalSongsRecently)
+  },
+  // 保存收藏歌曲
+  saveCollectionSongs({commit, state}, currentSong) {
+    let finalCollectionSongArr = saveCollectionSong(currentSong)
+    commit(SET_SAVECOLLECTIONSONG, finalCollectionSongArr)
+  },
+  // 删除收藏歌曲
+  deleteCollectionSongs({commit, state}, currentSong) {
+    let finalCollectionSongArr = deleteCollectionSong(currentSong)
+    commit(SET_DELETECOLLECTIONSONG, finalCollectionSongArr)
   }
 }
 export default actions

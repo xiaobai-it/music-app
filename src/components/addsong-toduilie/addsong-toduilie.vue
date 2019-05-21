@@ -11,25 +11,28 @@
         <!--搜索框组件-->
         <SearchKuang ref="searchkuang" placeholder="搜索歌曲" @queryValue="queryValue"/>
       </div>
-      <div class="shortcut" >
+      <div class="shortcut" ref="isshowshortcut">
         <!--2个大按钮组件-->
         <Switches v-show="!showSearchResult" :switches="switches" :currentIndex="currentIndex" @switch="switchItem"/>
         <div class="list-wrapper">
-          <div class="list-scroll" v-if="currentIndex === 0">
+          <Scroll class="list-scroll"
+                  v-if="currentIndex === 0"
+                  :data="savePlaySongsRecently" ref="PlaySongsRecentlyFlag" >
             <div class="list-inner">
               <!--最近播放的歌曲的组件,歌曲列表组件-->
-              <SongList :musicData="savePlaySongsRecently"/>
+              <SongList :musicData="savePlaySongsRecently" @clickOneSong="clickOneSong"/>
               <span v-show="!savePlaySongsRecently.length">您还没有播放过任何歌曲</span>
             </div>
-          </div>
-          <div class="list-scroll"  v-if="currentIndex === 1" ref="SearchHistoryList">
+          </Scroll>
+          <Scroll :data="searchHistoryJiLu" class="list-scroll"
+                  v-if="currentIndex === 1" ref="SearchHistoryList">
             <div class="list-inner">
               <!--搜索历史记录展示的组件-->
               <SearchHistoryList  :searchHistoryJiLu="searchHistoryJiLu"
                                   @clickOneSearchHistory="clickOneSearchHistory"
                                   @deleteOneSearchHistory="deleteOneSearchHistory"/>
             </div>
-          </div>
+          </Scroll>
         </div>
       </div>
       <div class="search-result" v-show="showSearchResult" >
@@ -38,12 +41,13 @@
                       @myBeforeScrollStart="myBeforeScrollStart"
                       @saveSearchHistory="saveSearchHistory" ref="SearchResult"/>
       </div>
-      <!--<top-tip>-->
-        <!--<div class="tip-title">-->
-          <!--<i class="icon-ok"></i>-->
-          <!--<span class="text">1首歌曲已经添加到播放列表</span>-->
-        <!--</div>-->
-      <!--</top-tip>-->
+      <!--顶部弹框组件-->
+      <TopAlert ref="topalert">
+        <div class="tip-title">
+          <i class="icon-ok"></i>
+          <span class="text">一首歌曲已经添加到播放列表</span>
+        </div>
+      </TopAlert>
     </div>
   </transition>
 </template>
@@ -55,6 +59,8 @@ import SearchResult from '../search-result/search-result'
 import Switches from '../switches/switches'
 import SearchHistoryList from '../search-history-list/search-history-list'
 import SongList from '../song-list/song-list'
+import Scroll from '../../components/scroll/scroll'
+import TopAlert from '../top-alert/top-alert'
 
 export default {
   components: {
@@ -62,7 +68,9 @@ export default {
     SearchResult,
     SearchHistoryList,
     Switches,
-    SongList
+    SongList,
+    Scroll,
+    TopAlert
   },
   data() {
     return {
@@ -77,10 +85,18 @@ export default {
     ...mapState(['searchHistoryJiLu', 'savePlaySongsRecently'])
   },
   methods: {
-    ...mapActions(['saveSearchHistoryJiLU', 'deleteOneSearchHistoryJiLU']),
+    ...mapActions(['saveSearchHistoryJiLU',
+      'deleteOneSearchHistoryJiLU', 'searchResultClickOneSongInsertAndToPlayPage']),
     // 点击显示当前组件，父组件mini-playlist调用
     show() {
       this.showComponent = true
+      setTimeout(() => {
+        if (this.currentIndex === 0) {
+          this.$refs.PlaySongsRecentlyFlag.refresh()
+        } else {
+          this.$refs.SearchHistoryList.refresh()
+        }
+      }, 20)
     },
     // 点击隐藏当前组件
     hide() {
@@ -110,19 +126,29 @@ export default {
     // 把搜框输入的值，保存在vuex中的searchHistoryJiLu中，然后在历史组件中显示出来搜索记录
     saveSearchHistory() {
       this.saveSearchHistoryJiLU(this.showSearchResult)
+      // topalert组件的方法
+      this.$refs.topalert.show()
     },
     // 中间的2个大按钮的切换
     switchItem (index) {
       this.currentIndex = index
+    },
+    // 点击最近播放页面的一首歌曲，把歌曲添加到当前播放列表中
+    clickOneSong(item, index) {
+      if (index !== 0) {
+        this.searchResultClickOneSongInsertAndToPlayPage(item)
+        // topalert组件的方法
+        this.$refs.topalert.show()
+      }
     }
   },
   watch: {
-    // 监视input输入框值的改变,一旦改变并且有值,搜索历史记录组件就隐藏
+    // 监视input输入框值的改变,一旦改变并且有值,搜索历史记录组件、最近播放组件就隐藏
     showSearchResult () {
       if (this.showSearchResult === '') {
-        this.$refs.SearchHistoryList.style.display = 'block'
+        this.$refs.isshowshortcut.style.display = 'block'
       } else {
-        this.$refs.SearchHistoryList.style.display = 'none'
+        this.$refs.isshowshortcut.style.display = 'none'
       }
     }
   }

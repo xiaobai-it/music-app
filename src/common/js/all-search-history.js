@@ -16,8 +16,8 @@ export function saveSearchHistory(searchValue) {
   }
   // 向数组的第一个位置，插入最新的搜索记录
   finalSearch.unshift(searchValue)
-  // 数组中的搜搜距离大于10条，全部去掉，只留10条
-  if (finalSearch.length > 10) {
+  // 数组中的搜搜距离大于20条，全部去掉，只留20条
+  if (finalSearch.length > 20) {
     finalSearch.pop()
   }
   // 把最新的搜索记录保存到本地缓存的mySearchHistory数组中
@@ -76,4 +76,46 @@ export function savePlaySongsRecently(currentPlaySong) {
 // vuex初始化的时候，获取之前本地已经存储的搜索记录
 export function getSavePlaySongsRecently() {
   return goodStoroge.get('savePlaySongsRecently', [])
+}
+
+// 保存收藏收藏歌曲
+export function saveCollectionSong(currentSong) {
+  // 获取本地缓存的值
+  let finalSearch = goodStoroge.get('collectionSong', [])
+  // 找到当前播放的歌曲，在本地缓存中的数组中，对应的索引
+  // let index = finalSearch.findIndex((item) => {
+  //   return item.id === currentSong.id
+  // })
+  // 向数组的第一个位置，插入最新的收藏歌曲
+  finalSearch.unshift(currentSong)
+  // 数组中的收藏歌曲大于500条，全部去掉，只留500条
+  if (finalSearch.length > 500) {
+    finalSearch.pop()
+  }
+  // 把最新的搜索记录保存到本地缓存的mySearchHistory数组中
+  goodStoroge.set('collectionSong', finalSearch)
+
+  return finalSearch // 返回是搜索记录的数组
+}
+
+// 删除收藏收藏歌曲
+export function deleteCollectionSong(currentSong) {
+  // 获取本地缓存的值
+  let finalSearch = goodStoroge.get('collectionSong', [])
+  // 找到当前播放的歌曲，在本地缓存中的数组中，对应的索引
+  let index = finalSearch.findIndex((item) => {
+    return item.id === currentSong.id
+  })
+  if (index !== -1) { // 存在的索引不是-1，把它删除
+    finalSearch.splice(index, 1)
+  }
+  // 把最新的搜索记录保存到本地缓存的mySearchHistory数组中
+  goodStoroge.set('collectionSong', finalSearch)
+
+  return finalSearch // 返回是搜索记录的数组
+}
+// 初始化的时候vuex中获取收藏的歌曲
+export function getCollectionSong(currentSong) {
+  // 获取本地缓存的值
+  return goodStoroge.get('collectionSong', [])
 }

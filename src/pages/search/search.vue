@@ -6,7 +6,7 @@
       <Searchkuang ref="searchkuang" @queryValue="queryValue"/>
     </div>
     <div class="shortcut-wrapper" v-show="!showSearchResult" ref="shortcutWrapper">
-      <Scroll class="shortcut" :data="shortcut" ref="shortcut">
+      <Scroll class="shortcut" :data="shortcut" :sleepRefresh="sleepRefresh" ref="shortcut">
         <div>
           <div class="hot-key">
             <h1 class="title">热门搜索</h1>
@@ -21,7 +21,7 @@
           <!--<div class="search-history" v-if="searchHistoryJiLu">-->
             <h1 class="title">
               <span class="text">
-                搜索历史 {{searchHistoryJiLu.length > 0 ? searchHistoryJiLu.length : '0'}} / 10
+                搜索历史 {{searchHistoryJiLu.length > 0 ? searchHistoryJiLu.length : '0'}} / 20
               </span>
               <span class="clear" @click.stop="deleteAllSearchHistory">
                 <i class="icon-clear"></i>
@@ -69,16 +69,19 @@ export default {
     return {
       hotKey: [], // 热门搜索数据
       showSearchResult: '', // 输入框输入的数据
-      searchHistoryValue: '' // 保存点击搜索历史中某一条数据
+      searchHistoryValue: '', // 保存点击搜索历史中某一条数据
+      sleepRefresh: 100 // scroll组件调用refresh方法的延时时间
     }
   },
   mounted() {
     // 解决第一次mini播放器出来的时候，界面不能滚动的问题，事件是由tab组件传递过来的
     PubSub.subscribe('clickSearchNav', (msg, data) => {
-      // 搜索首页距离mini播放器60px
-      const bottom = !this.fullScreen ? '60px' : '0'
-      this.$refs.shortcutWrapper.style.bottom = bottom
-      this.$refs.shortcut.refresh()
+      setTimeout(() => {
+        // 搜索首页距离mini播放器60px
+        const bottom = !this.fullScreen ? '60px' : '0'
+        this.$refs.shortcutWrapper.style.bottom = bottom
+        this.$refs.shortcut.refresh()
+      }, 20)
     })
     // 获取搜索首页下的热门搜索内的后台数据的函数
     getHotKey().then((response) => {

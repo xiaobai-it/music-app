@@ -1,7 +1,8 @@
 import {SET_SINNER, SET_PLAYING, SET_FULLSCREEN,
   SET_PLAYLIST, SET_SEQUENCELIST, SET_MODE, SET_CURRENTINDEX,
   SET_HOTGEDANTUIJIANDATAACTIONS, SET_ONETOPLIST,
-  SET_SAVESEARCHHISTORYJILU, SET_SAVETHESONGSRECENTLY} from './actions-types'
+  SET_SAVESEARCHHISTORYJILU, SET_SAVETHESONGSRECENTLY,
+  SET_SAVECOLLECTIONSONG, SET_DELETECOLLECTIONSONG} from './actions-types'
 
 const mutations = {
   [SET_SINNER] (state, {singerData}) {
@@ -36,6 +37,12 @@ const mutations = {
   },
   [SET_SAVETHESONGSRECENTLY] (state, finalSongsRecently) {
     state.savePlaySongsRecently = finalSongsRecently
+  },
+  [SET_SAVECOLLECTIONSONG] (state, finalCollectionSongArr) {
+    state.saveCollectionOrQuXiaoCollectionSong = finalCollectionSongArr
+  },
+  [SET_DELETECOLLECTIONSONG] (state, finalCollectionSongArr) {
+    state.saveCollectionOrQuXiaoCollectionSong = finalCollectionSongArr
   }
 }
 export default mutations
