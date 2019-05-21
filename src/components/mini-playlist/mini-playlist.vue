@@ -19,9 +19,10 @@
               <!--歌曲名和歌手-->
               <span class="text" :class="changesongColor(item)">{{item.name}}</span>
               <!--收藏图标-->
-              <span class="like">
-                <i class="icon-not-favorite"></i>
+              <span class="like" @click.stop="clickCollectionOrQuXiaoCollectionSong(item)">
+                <i :class="changeCollectionStyle(item)"></i>
               </span>
+              <!--删除图标-->
               <span class="delete" @click.stop="deleteOneSingerAtMiniPlayList(item)">
                 <i class="icon-delete"></i>
               </span>
@@ -66,7 +67,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['sequenceList', 'mode', 'playList']),
+    ...mapState(['sequenceList', 'mode', 'playList', 'saveCollectionOrQuXiaoCollectionSong']),
     ...mapGetters(['currentSong']),
     // 改变播放模式的样式
     changePalyMode () {
@@ -80,7 +81,8 @@ export default {
   methods: {
     ...mapActions(['atMiniPlayListDeleteOneSinger',
       'setCurrentindex', 'setPlaying', 'setPlaylist',
-      'clearMiniPlayLieBiaoData', 'setMode']),
+      'clearMiniPlayLieBiaoData', 'setMode',
+      'deleteCollectionSongs', 'saveCollectionSongs']),
     // 显示迷你播放器的播放列表,父组件调用
     show () {
       this.showMiniPlayList = true
@@ -183,6 +185,27 @@ export default {
       // 滚动到对应的li标签
       let li = this.$refs.currentPlaysongBiaoQian[currentSongIndex - 14]
       this.$refs.listContent.scrollToElement(li, 500)
+    },
+    // 点击收藏或者取消收藏歌曲
+    clickCollectionOrQuXiaoCollectionSong(currentSong) {
+      let index = this.saveCollectionOrQuXiaoCollectionSong.findIndex((item) => {
+        return item.id === currentSong.id
+      })
+      // index !== -1 说明当前歌曲已经收藏了，这时候需要删除当前歌曲的收藏
+      if (index !== -1) {
+        this.deleteCollectionSongs(currentSong)
+      } else {
+        // index === -1 说明当前歌曲没有收藏，这时候需要收藏当前歌曲
+        this.saveCollectionSongs(currentSong)
+      }
+    },
+    // 改变收藏和取消收藏的样式
+    changeCollectionStyle (currentSong) {
+      let index = this.saveCollectionOrQuXiaoCollectionSong.findIndex((item) => {
+        return item.id === currentSong.id
+      })
+      // index !== -1 说明当前歌曲已经收藏了
+      return index !== -1 ? 'icon-favorite' : 'icon-not-favorite'
     }
   },
   watch: {

@@ -78,15 +78,21 @@ export function getSavePlaySongsRecently() {
   return goodStoroge.get('savePlaySongsRecently', [])
 }
 
-// 保存收藏收藏歌曲
+// 保存收藏歌曲
 export function saveCollectionSong(currentSong) {
   // 获取本地缓存的值
   let finalSearch = goodStoroge.get('collectionSong', [])
-  // 找到当前播放的歌曲，在本地缓存中的数组中，对应的索引
+  // // 找到播放歌曲，在本地缓存中的数组中，对应的索引
   // let index = finalSearch.findIndex((item) => {
   //   return item.id === currentSong.id
   // })
-  // 向数组的第一个位置，插入最新的收藏歌曲
+  // if (index === 0) { // 本地缓存中的数组中的第一条数据
+  //   return
+  // }
+  // if (index > 0) { // 存在的索引不是第一个，把它删除
+  //   finalSearch.splice(index, 1)
+  // }
+  // 向数组的第一个位置，插入收藏的歌曲
   finalSearch.unshift(currentSong)
   // 数组中的收藏歌曲大于500条，全部去掉，只留500条
   if (finalSearch.length > 500) {

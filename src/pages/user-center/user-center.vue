@@ -13,18 +13,20 @@
         <span class="text">随机播放全部</span>
       </div>
       <div class="list-wrapper">
-        <div class="list-scroll" ref="ilikedivflag">
+        <Scroll class="list-scroll" :data="saveCollectionOrQuXiaoCollectionSong" ref="ilikedivflag">
           <div class="list-inner">
-            我喜欢的页面
-            <!--<song-list :songs="favoriteList" @select="selectSong"></song-list>-->
+            <!--我收藏的组件-->
+            <!--收藏歌曲的组件-->
+            <SongList :musicData="saveCollectionOrQuXiaoCollectionSong" @clickOneSong="clickOneSong"/>
+            <NoResult class="topjuli" v-show="!saveCollectionOrQuXiaoCollectionSong.length" title="您还没有收藏过任何歌曲"/>
           </div>
-        </div>
+        </Scroll>
         <Scroll class="list-scroll" :data="savePlaySongsRecently" ref="ilistionrecentlyflag">
           <div class="list-inner">
             <!--我最近听的组件-->
             <!--最近播放的歌曲的组件,歌曲列表组件-->
             <SongList :musicData="savePlaySongsRecently" @clickOneSong="clickOneSong"/>
-            <span v-show="!savePlaySongsRecently.length">您还没有播放过任何歌曲</span>
+            <NoResult class="topjuli" v-show="!savePlaySongsRecently.length" title="您还没有播放过任何歌曲"/>
           </div>
         </Scroll>
       </div>
@@ -48,13 +50,15 @@ import Switches from '../../components/switches/switches'
 import SongList from '../../components/song-list/song-list'
 import TopAlert from '../../components/top-alert/top-alert'
 import Scroll from '../../components/scroll/scroll'
+import NoResult from '../../components/no-result/no-result'
 
 export default {
   components: {
     Switches,
     SongList,
     TopAlert,
-    Scroll
+    Scroll,
+    NoResult
   },
   data() {
     return {
@@ -63,7 +67,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['savePlaySongsRecently'])
+    ...mapState(['savePlaySongsRecently', 'saveCollectionOrQuXiaoCollectionSong'])
   },
   methods: {
     ...mapActions(['searchResultClickOneSongInsertAndToPlayPage']),
@@ -71,11 +75,12 @@ export default {
     switchItem(index) {
       this.currentIndex = index
       if (index === 0) {
-        this.$refs.ilikedivflag.style.display = 'block'
+        this.$refs.ilikedivflag.$el.style.display = 'block'
         this.$refs.ilistionrecentlyflag.$el.style.display = 'none'
+        this.$refs.ilikedivflag.refresh()
       } else {
         this.$refs.ilistionrecentlyflag.$el.style.display = 'block'
-        this.$refs.ilikedivflag.style.display = 'none'
+        this.$refs.ilikedivflag.$el.style.display = 'none'
         this.$refs.ilistionrecentlyflag.refresh()
       }
     },
@@ -146,6 +151,8 @@ export default {
         overflow: hidden
         .list-inner
           padding: 20px 30px
+          .topjuli
+            margin-top :100px
     .no-result-wrapper
       position: absolute
       width: 100%

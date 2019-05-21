@@ -75,7 +75,7 @@
             </div>
             <!--收藏按钮-->
             <div class="icon i-right" @click="clickCollectionOrQuXiaoCollectionSong(currentSong)">
-              <i class="icon icon-not-favorite" :class="changeCollectionStyle(currentSong)" ></i>
+              <i class="icon" :class="changeCollectionStyle(currentSong)" ></i>
             </div>
           </div>
         </div>
@@ -475,7 +475,7 @@ export default {
         return item.id === currentSong.id
       })
       // index !== -1 说明当前歌曲已经收藏了
-      return index !== -1 ? 'icon-favorite': 'icon-not-favorite'
+      return index !== -1 ? 'icon-favorite' : 'icon-not-favorite'
     }
   },
   watch: {
