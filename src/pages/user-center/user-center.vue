@@ -1,6 +1,6 @@
 <template>
   <transition name="slide">
-    <div class="user-center">
+    <div class="user-center" ref="usercenter">
       <div class="back" @click="$router.back()">
         <i class="icon-back"></i>
       </div>
@@ -8,7 +8,7 @@
         <!--2个大按钮组件-->
         <Switches :switches="switches" :currentIndex="currentIndex" @switch="switchItem"/>
       </div>
-      <div class="play-btn">
+      <div class="play-btn" @click="clickRandomPlay">
         <i class="icon-play"></i>
         <span class="text">随机播放全部</span>
       </div>
@@ -30,16 +30,6 @@
           </div>
         </Scroll>
       </div>
-      <div class="no-result-wrapper">
-        <!--<no-result :title="noResultDesc"></no-result>-->
-      </div>
-      <!--顶部弹框组件-->
-      <TopAlert ref="topalert">
-        <div class="tip-title">
-          <i class="icon-ok"></i>
-          <span class="text">一首歌曲已经添加到播放列表</span>
-        </div>
-      </TopAlert>
     </div>
   </transition>
 </template>
@@ -48,7 +38,6 @@
 import {mapActions, mapState} from 'vuex'
 import Switches from '../../components/switches/switches'
 import SongList from '../../components/song-list/song-list'
-import TopAlert from '../../components/top-alert/top-alert'
 import Scroll from '../../components/scroll/scroll'
 import NoResult from '../../components/no-result/no-result'
 
@@ -56,13 +45,12 @@ export default {
   components: {
     Switches,
     SongList,
-    TopAlert,
     Scroll,
     NoResult
   },
   data() {
     return {
-      currentIndex: 0,
+      currentIndex: 0, // 默认大按钮的索引
       switches: [{name: '我收藏的'}, {name: '最近听的'}]
     }
   },
@@ -70,7 +58,7 @@ export default {
     ...mapState(['savePlaySongsRecently', 'saveCollectionOrQuXiaoCollectionSong'])
   },
   methods: {
-    ...mapActions(['searchResultClickOneSongInsertAndToPlayPage']),
+    ...mapActions(['searchResultClickOneSongInsertAndToPlayPage', 'clickRandomPlaySongs']),
     // 点击2个大按钮的某一个显示对应的组件
     switchItem(index) {
       this.currentIndex = index
@@ -86,10 +74,20 @@ export default {
     },
     // 点击最近播放页面的一首歌曲，把歌曲添加到当前播放列表中
     clickOneSong(item, index) {
-      if (index !== 0) {
-        this.searchResultClickOneSongInsertAndToPlayPage(item)
-        // topalert组件的方法
-        this.$refs.topalert.show()
+      // if (index !== 0) {
+      this.searchResultClickOneSongInsertAndToPlayPage(item)
+      // topalert组件的方法
+      this.$refs.topalert.show()
+      // }
+    },
+    // 点击随机播放按钮，随机播放当前组件内的歌曲,并且大播放器界面显示出来
+    clickRandomPlay() {
+      if (this.currentIndex === 0) {
+        this.clickRandomPlaySongs({musicData: this.saveCollectionOrQuXiaoCollectionSong})
+        this.$refs.usercenter.style.zIndex = 70 // 让组件自身在大播放器界面的下面
+      } else {
+        this.clickRandomPlaySongs({musicData: this.savePlaySongsRecently})
+        this.$refs.usercenter.style.zIndex = 70
       }
     }
   }

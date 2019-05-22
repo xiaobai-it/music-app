@@ -20,6 +20,9 @@
              @touchmove.prevent="touchMoveLyric"
              @touchend="touchEndLyric">
           <div class="middle-l" >
+            <!--点击左下角播放模式，显示对应的播放模式文字-->
+            <p class="show-play-mode" ref="showplaymode">{{showplaymodetext}}</p>
+            <!--旋转图片-->
             <div class="cd-wrapper" ref="cdWrapper">
               <div class="cd" :class="changeImgrotate" >
                 <img class="image" v-lazy="currentSong.image" >
@@ -27,9 +30,10 @@
             </div>
             <!--显示部分歌词-->
             <div class="playing-lyric-wrapper" ref="buFenLyric">
-              <div class="playing-lyric">
+              <div class="playing-lyric" v-if="showBuFenPlayingLyric">
                 {{showBuFenPlayingLyric}}
               </div>
+              <!--<div class="playing-lyric" v-else ref="lyriczhengzaijiazai">正在加载歌词...</div>-->
             </div>
           </div>
           <!--全屏显示歌词,可滚动用scroll组件-->
@@ -41,6 +45,7 @@
                   {{lineLyric.txt}}
                 </p>
               </div>
+              <!--<div class="text" v-else ref="lyriczhengzaijiazai">正在加载歌词...</div>-->
             </div>
           </Scroll>
         </div>
@@ -66,7 +71,7 @@
             <div class="icon i-left" :class="disableClass">
               <i class="icon-prev" @click="prevSongs"></i>
             </div>
-            <div class="icon i-center" >
+            <div class="icon i-center" :class="disableClass" >
               <!--icon-play icon-pause-->
               <i :class="changePalyImg" @click="togglePlayStatue"></i>
             </div>
@@ -78,6 +83,11 @@
               <i class="icon" :class="changeCollectionStyle(currentSong)" ></i>
             </div>
           </div>
+        </div>
+        <!--歌词样式设置按钮-->
+        <div class="changelyricstyle">
+          <i class="icon-next" @click.stop="clickchangelyricstyle"></i>
+          <p class="icon-text-desc">歌词样式</p>
         </div>
       </div>
     </transition>
@@ -108,9 +118,15 @@
     </transition>
     <!--mini-playlist mini播放器的列表组件-->
     <MiniPlaylist ref="MiniPlaylist"/>
+    <!--歌词样式设置组件-->
+    <div class="show-lyricstyle-component"
+         v-if="isshowlyricstylecomponent"
+         @click="hideenlyricstylecomponent">
+      <div class="content">99999999999999</div>
+    </div>
     <!--播放器按钮-->
     <audio :src="currentSong.url" ref="audio"
-           @canplay="audioCanPlay"
+           @play="audioCanPlay"
            @error="audioError"
            @timeupdate="timeupdate" @ended="ended"></audio>
   </div>
@@ -146,7 +162,9 @@ export default {
       currentLyricLineNum: 0,
       currentShow: 'cd',
       touch: {}, // 歌词左右滑动的时候，滑动的默认参数
-      showBuFenPlayingLyric: '' // 显示部分歌词
+      showBuFenPlayingLyric: '', // 显示部分歌词
+      showplaymodetext: '',
+      isshowlyricstylecomponent: false // 是否显示配置歌词样式组件
     }
   },
   computed: {
@@ -183,6 +201,15 @@ export default {
       'setCurrentindex', 'setMode',
       'setPlaylist', 'saveTheSongsRecently',
       'saveCollectionSongs', 'deleteCollectionSongs']),
+    // 点击调整歌词样式
+    clickchangelyricstyle() {
+      console.log('dianjil')
+      this.isshowlyricstylecomponent = true
+    },
+    // 点击隐藏歌词样式组件
+    hideenlyricstylecomponent () {
+      this.isshowlyricstylecomponent = false
+    },
     // 显示迷你播放器的播放列表
     showMiniPlaylist () {
       this.$refs.MiniPlaylist.show()
@@ -363,6 +390,25 @@ export default {
     choosePlayMode () {
       this.$nextTick(() => {
         const newMode = (this.mode + 1) % 3
+        if (newMode === 0) {
+          this.$refs.showplaymode.style.display = 'block'
+          this.showplaymodetext = '顺序播放'
+          setTimeout(() => {
+            this.$refs.showplaymode.style.display = 'none'
+          }, 1000)
+        } else if (newMode === 1) {
+          this.$refs.showplaymode.style.display = 'block'
+          this.showplaymodetext = '单曲循环'
+          setTimeout(() => {
+            this.$refs.showplaymode.style.display = 'none'
+          }, 1000)
+        } else {
+          this.$refs.showplaymode.style.display = 'block'
+          this.showplaymodetext = '随机播放'
+          setTimeout(() => {
+            this.$refs.showplaymode.style.display = 'none'
+          }, 1000)
+        }
         // 改变vuex中的mode值
         this.setMode(newMode)
         // 如果点击的是随机播放，对playList数组里面的歌曲进行随机排序
@@ -464,9 +510,19 @@ export default {
       // index !== -1 说明当前歌曲已经收藏了，这时候需要删除当前歌曲的收藏
       if (index !== -1) {
         this.deleteCollectionSongs(currentSong)
+        this.$refs.showplaymode.style.display = 'block'
+        this.showplaymodetext = '取消收藏'
+        setTimeout(() => {
+          this.$refs.showplaymode.style.display = 'none'
+        }, 1000)
       } else {
         // index === -1 说明当前歌曲没有收藏，这时候需要收藏当前歌曲
         this.saveCollectionSongs(currentSong)
+        this.$refs.showplaymode.style.display = 'block'
+        this.showplaymodetext = '收藏成功'
+        setTimeout(() => {
+          this.$refs.showplaymode.style.display = 'none'
+        }, 1000)
       }
     },
     // 改变收藏和取消收藏的样式
@@ -492,9 +548,13 @@ export default {
       // 解决连续点击下一首歌曲，出现的歌词回跳的问题
       if (this.currentLyric) {
         this.currentLyric.stop()
+        this.currentTime = 0
+        this.currentLyricLineNum = 0
+        this.showBuFenPlayingLyric = ''
       }
       // 确保dom加载完成，在调用歌词播放器，否则报错
-      setTimeout(() => {
+      clearTimeout(this.timer)
+      this.timer = setTimeout(() => {
         // 获取对应的歌曲的歌词,必须传入歌曲的mid
         getLyric(this.currentSong.mid)
           .then((response) => {
@@ -502,8 +562,13 @@ export default {
               // 得到的歌词是base64格式的字符串，需要用第三方库js-base64先解码,在用第三方库lyric-parser,格式化歌词
               let formatLyric = Base64.decode(response.data.lyric)
               this.currentLyric = new Lyric(formatLyric, this.handlerLyric)
-              // if (this.playing) {
-              if (this.songReady === true) {
+
+              // 解决连续点击歌曲，出现歌词混乱的回滚问题
+              if (this.currentLyric) {
+                this.$refs.audio.play() // 播放器开始播放
+              }
+
+              if (this.playing) {
                 console.log('歌曲开始播放了，可以播放歌词了')
                 this.currentLyric.play() // play()是第三方库lyric-parser提供的方法,播放歌词用的
               }
@@ -516,8 +581,8 @@ export default {
             this.currentLyricLineNum = 0
             this.showBuFenPlayingLyric = ''
           })
-        this.$refs.audio.play() // 播放器开始播放
-      }, 1500)
+        // this.$refs.audio.play() // 播放器开始播放
+      }, 1000)
     },
     // 播放状态改变的时候，按钮变换图片，同时歌曲暂停或播放
     playing() {
@@ -537,6 +602,30 @@ export default {
   .player
     position :relative
     z-index: 80
+    .changelyricstyle
+      color: $color-theme
+      position:absolute
+      bottom: 22%
+      right: 30px
+      font-size: 30px
+      text-align: center
+      z-index: 160
+      .icon-text-desc
+        font-size: 12px
+    .show-lyricstyle-component
+      position: fixed
+      bottom: 0
+      height: 100%
+      width: 100%
+      background: transparent
+      z-index: 190
+      .content
+        position: absolute
+        bottom: 0
+        height: 140px
+        width: 100%
+        background: $color-background
+        z-index: 191
     .normal-player
       position: fixed
       left: 0
@@ -595,10 +684,23 @@ export default {
           width: 100%
           height: 0
           padding-top: 80%
+          .show-play-mode
+            position: absolute
+            left: 50%
+            top: 0
+            margin-left: -40px
+            width: 80px
+            height: 30px
+            background #000
+            color: #fff
+            font-size:$font-size-medium-x
+            text-align:center
+            line-height:30px
+            display:none
           .cd-wrapper
             position: absolute
             left: 10%
-            top: 0
+            top: 40px
             width: 80%
             height: 100%
             .cd
@@ -621,7 +723,7 @@ export default {
 
           .playing-lyric-wrapper
             width: 80%
-            margin: 30px auto 0 auto
+            margin:70px auto 0 auto
             overflow: hidden
             text-align: center
             .playing-lyric
