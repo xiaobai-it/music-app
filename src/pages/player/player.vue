@@ -119,11 +119,33 @@
     <!--mini-playlist mini播放器的列表组件-->
     <MiniPlaylist ref="MiniPlaylist"/>
     <!--歌词样式设置组件-->
-    <div class="show-lyricstyle-component"
+    <transition name="tiaozhenglyriccolor">
+      <div class="show-lyricstyle-component"
          v-if="isshowlyricstylecomponent"
          @click="hideenlyricstylecomponent">
-      <div class="content">99999999999999</div>
+      <div class="content" @click.stop>
+        <div class="lyricstyletitle">调整歌词样式</div>
+        <div class="changelyricstylecolor-wraper">
+          <span class="left-desc">颜色</span>
+          <ul class="right-style">
+            <li class="changelyricstylecoloritem"
+                :class="item"
+                v-for="(item, index) in lyricStylecolorArr " :key="index"
+                @click="startchangelyriccolor(index)"></li>
+          </ul>
+        </div>
+        <div class="changelyricstylecolor-wraper">
+          <span class="left-desc">字体</span>
+          <div class="fontsize-progress-bar-wrapper right-style">
+            <span class="left-font-size-change">T-</span>
+            <div class="fontsize-progress-bar"></div>
+            <span class="right-font-size-change">T+</span>
+          </div>
+        </div>
+        <div class="closelyricstyle" @click="hideenlyricstylecomponent">关闭</div>
+      </div>
     </div>
+    </transition>
     <!--播放器按钮-->
     <audio :src="currentSong.url" ref="audio"
            @play="audioCanPlay"
@@ -164,7 +186,8 @@ export default {
       touch: {}, // 歌词左右滑动的时候，滑动的默认参数
       showBuFenPlayingLyric: '', // 显示部分歌词
       showplaymodetext: '',
-      isshowlyricstylecomponent: false // 是否显示配置歌词样式组件
+      isshowlyricstylecomponent: false, // 是否显示配置歌词样式组件
+      lyricStylecolorArr: ['item1', 'item2', 'item3', 'item4', 'item5', 'item6'] // 设置歌词颜色的默认属性
     }
   },
   computed: {
@@ -203,12 +226,15 @@ export default {
       'saveCollectionSongs', 'deleteCollectionSongs']),
     // 点击调整歌词样式
     clickchangelyricstyle() {
-      console.log('dianjil')
       this.isshowlyricstylecomponent = true
     },
     // 点击隐藏歌词样式组件
     hideenlyricstylecomponent () {
       this.isshowlyricstylecomponent = false
+    },
+    // 点击开始改变歌词的背景色
+    startchangelyriccolor(index) {
+      console.log(index)
     },
     // 显示迷你播放器的播放列表
     showMiniPlaylist () {
@@ -619,13 +645,71 @@ export default {
       width: 100%
       background: transparent
       z-index: 190
+      &.tiaozhenglyriccolor-enter-active, &.tiaozhenglyriccolor-leave-active
+        height: 100%
+        transition: all 0.3s
+      &.tiaozhenglyriccolor-enter, &.tiaozhenglyriccolor-leave-to
+        height: 0%
+        transition: all 0.3s
       .content
         position: absolute
         bottom: 0
-        height: 140px
+        height: 30%
         width: 100%
         background: $color-background
         z-index: 191
+        .lyricstyletitle
+          text-align: center
+          padding: 10px
+          border-bottom: 1px solid #666
+        .changelyricstylecolor-wraper
+          border-bottom: 1px solid #666
+          height: 30%
+          display:flex
+          justify-content: center
+          align-items: center
+          .left-desc
+            padding-right: 10px
+          .right-style
+            width: 80%
+            .changelyricstylecoloritem
+              float: left
+              margin-left: 20px
+              width: 30px
+              height: 30px
+            .item1
+              background: orange
+            .item2
+              background: yellow
+            .item3
+              background: green
+            .item4
+              background: blueviolet
+            .item5
+              background: pink
+            .item6
+              background: red
+          .fontsize-progress-bar-wrapper
+            display: flex
+            justify-content: center
+            align-items: center
+            .fontsize-progress-bar
+              width: 100%
+              height: 5px
+              background: #666
+            .left-font-size-change
+              padding-right: 10px
+            .right-font-size-change
+              padding-left: 10px
+        .closelyricstyle
+          position: absolute
+          bottom: 0
+          width: 100%
+          height: 20%
+          line-height: 40px
+          text-align: center
+          border-top: 1px solid #666
+          background: #666
     .normal-player
       position: fixed
       left: 0
