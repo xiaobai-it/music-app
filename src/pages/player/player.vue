@@ -30,8 +30,9 @@
             </div>
             <!--显示部分歌词-->
             <div class="playing-lyric-wrapper" ref="buFenLyric">
-              <div class="playing-lyric" v-if="showBuFenPlayingLyric" ref="playBufenLyric"
-                   :class="changecurrentLyricColor">
+              <div class="playing-lyric" v-if="showBuFenPlayingLyric"
+                   ref="playBufenLyric"
+                   :class="changecurrentLyricColor" :style="{fontSize: changeLyricFontSize}">
                 {{showBuFenPlayingLyric}}
               </div>
               <!--<div class="playing-lyric" v-else ref="lyriczhengzaijiazai">正在加载歌词...</div>-->
@@ -44,6 +45,7 @@
                 <!--<p class="text" ref="lyricLine" :class="{'current': currentLyricLineNum === index}"-->
                 <p class="text" ref="lyricLine"
                    :class="currentLyricLineNum === index ? changecurrentLyricColor : ''"
+                   :style="{fontSize: changeLyricFontSize}"
                    v-for="(lineLyric, index) in currentLyric.lines" :key="index">
                   {{lineLyric.txt}}
                 </p>
@@ -138,7 +140,7 @@
                 @click="startchangelyriccolor(index)"></li>
           </ul>
         </div>
-        <div class="changelyricstylecolor-wraper">
+        <div class="changelyricstylecolor-wraper changelyricstylecolor-wraper-top">
           <span class="left-desc">字体</span>
           <div class="fontsize-progress-bar-wrapper right-style">
             <span class="left-font-size-change">T-</span>
@@ -146,7 +148,7 @@
               <!--ProgressBar组件-->
               <ProgressBar :lyricStyleProgressMove="lyricStyleProgressMove"
                            @progressTouchEnd="lyricprogressTouchEnd"
-                           :saveLyricFontSize="saveLyricFontSize[0]" />
+                           :saveLyricFontSize="this.saveLyricFontSize[0]" ref="changeLyricStyleProgressBar"/>
             </div>
             <span class="right-font-size-change">T+</span>
           </div>
@@ -229,8 +231,11 @@ export default {
     prossBarBaiFenBi () {
       return this.currentTime / this.currentSong.duration
     },
-    // 改变正在播放歌词的颜色
+    // 设置正在播放歌词的颜色
     changecurrentLyricColor() {
+      if (!this.saveLyricColor.length) {
+        return 'current'
+      }
       if (this.saveLyricColor[0].index === 0) {
         return 'current1'
       } else if (this.saveLyricColor[0].index === 1) {
@@ -246,6 +251,13 @@ export default {
       } else {
         return 'current'
       }
+    },
+    // 设置所有播放歌词的大小
+    changeLyricFontSize() {
+      if (!this.saveLyricFontSize.length) {
+        return
+      }
+      return `${this.saveLyricFontSize[0]}px`
     }
   },
   methods: {
@@ -257,10 +269,17 @@ export default {
     // 点击显示歌词样式组件
     clickchangelyricstyle() {
       this.isshowlyricstylecomponent = true
-      // 显示歌词样式组件中歌词对应的方框的文字
-      const index = this.saveLyricColor[0].index
       setTimeout(() => {
+        if (!this.saveLyricColor.length) {
+          return ''
+        }
+        // 设置歌词样式组件中歌词对应的方框的文字
+        const index = this.saveLyricColor[0].index
         this.$refs.changelyricstylecoloritem[index].innerHTML = this.saveLyricColor[0].text
+
+        // progress-bar组件方法的调用，设置调整歌词组件内的进度条的长度和位置
+        this.$refs.changeLyricStyleProgressBar.showProgressCurrentLen()
+        this.$refs.changeLyricStyleProgressBar.showProgressBtnCurrentPosition()
       }, 20)
     },
     // 点击隐藏歌词样式组件
@@ -311,12 +330,6 @@ export default {
 
       // 把改变歌词大小的进度条的长度保存到本地缓存中
       this.startSaveLyricProgressLen(finalLyricSize)
-
-      // 改变全屏歌词个部分歌词的大小 还存在问题，进度条不对应，重新刷新后，歌词大小不对？？？？？？？？？
-      this.$refs.lyricLine.forEach((item) => {
-        item.style.fontSize = `${this.saveLyricFontSize[0]}px`
-      })
-      this.$refs.playBufenLyric.style.fontSize = `${this.saveLyricFontSize[0]}px`
     },
     // 显示迷你播放器的播放列表
     showMiniPlaylist () {
@@ -744,8 +757,9 @@ export default {
           text-align: center
           padding: 10px
           border-bottom: 1px solid #666
+        .changelyricstylecolor-wraper-top
+          border-top: 1px solid #666
         .changelyricstylecolor-wraper
-          border-bottom: 1px solid #666
           height: 30%
           display:flex
           justify-content: center
@@ -753,10 +767,10 @@ export default {
           .left-desc
             padding-right: 10px
           .right-style
-            width: 80%
+            width: 85%
             .changelyricstylecoloritem
               float: left
-              margin-left: 20px
+              margin-left: 15px
               width: 30px
               height: 30px
               font-size: 12px
@@ -1063,6 +1077,8 @@ export default {
         .icon-play-mini, .icon-pause-mini, .icon-playlist
           font-size: 30px
           color: $color-theme-d
+          position: relative
+          bottom: 3px
         .icon-mini
           font-size: 32px
           position: absolute

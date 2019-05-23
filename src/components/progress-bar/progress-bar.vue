@@ -1,7 +1,7 @@
 <template>
   <div class="progress-bar" ref="wrapProgressDiv" @click="clickProgressPossiTion">
     <div class="bar-inner">
-      <div class="progress" ref="progressDiv" ></div>
+      <div class="progress" ref="progressDiv"></div>
       <div class="progress-btn-wrapper" ref="progressBtn"
       @touchstart="progressTouchStart"
       @touchmove="progressTouchMove"
@@ -24,7 +24,7 @@ export default {
       type: Boolean,
       default: false
     },
-    saveLyricFontSize: { // 歌词样式组件传递过来的歌词大小的进度条的值
+    saveLyricFontSize: { // 歌词样式组件传递过来的进度条对应的歌词大小的值
       type: Number,
       default: 0
     }
@@ -36,6 +36,22 @@ export default {
     }
   },
   methods: {
+    // 显示调整歌词组件中进度条对应的长度, 父组件player中调整歌词样式的组件调用
+    showProgressCurrentLen() {
+      this.finalshowposition()
+    },
+    // 显示调整歌词组件中进度条对应的小圆点的位置，父组件player中调整歌词样式的组件调用
+    showProgressBtnCurrentPosition() {
+      this.finalshowposition()
+    },
+    // 调整歌词组件中进度条对应的小圆点的位置,是上面2个方法调用的
+    finalshowposition() {
+      const moveLen = this.$refs.wrapProgressDiv.clientWidth / 50 // 字体每放大0.1，字体进度条需要移动的距离
+      const finalmoveLen = Math.floor((this.saveLyricFontSize - 15) * moveLen * 10) // 字体进度条最终移动的距离
+      // 对小球和滚动条位置变换的css设置
+      this.$refs.progressBtn.style.transform = `translate3d(${finalmoveLen}px, 0, 0)`
+      this.$refs.progressDiv.style.width = `${finalmoveLen}px`
+    },
     // 点击进度条
     progressTouchStart (e) {
       if (this.lyricStyleProgressMove) {
@@ -133,15 +149,6 @@ export default {
         this.$refs.progressBtn.style.transform = `translate3d(${moveLen}px, 0, 0)`
       }
     }
-    // 歌词样式组件传递过来的歌词大小的进度条的值
-    // saveLyricFontSize () {
-    // const allProgressLen = this.$refs.wrapProgressDiv.clientWidth - 16 // 进度条总长度
-    // const showLyricProgressLen = this.saveLyricFontSize / allProgressLen
-    // console.log(showLyricProgressLen)
-    // // 对小球和滚动条位置变换的css设置
-    // this.$refs.progressDiv.style.width = `${showLyricProgressLen}px`
-    // this.$refs.progressBtn.style.transform = `translate3d(${showLyricProgressLen}px, 0, 0)`
-    // }
   }
 }
 </script>
