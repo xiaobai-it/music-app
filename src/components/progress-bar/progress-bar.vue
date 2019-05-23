@@ -19,47 +19,96 @@ export default {
     prossBarBaiFenBi: {
       type: Number,
       default: 0
+    },
+    lyricStyleProgressMove: { // 歌词样式组件传递过来的值
+      type: Boolean,
+      default: false
+    },
+    saveLyricFontSize: { // 歌词样式组件传递过来的歌词大小的进度条的值
+      type: Number,
+      default: 0
     }
   },
   data () {
     return {
-      touch: { touchFlag: false, touchpos: 0, progressWidth: 0 } // 进度条上的圆点的默认值
+      touch: { touchFlag: false, touchpos: 0, progressWidth: 0 }, // 进度条上的圆点的默认值
+      lyricSizeTouch: { touchFlag: false, touchpos: 0, progressWidth: 0 } // 调整歌词样式组件内进度条的圆点的默认值
     }
   },
   methods: {
     // 点击进度条
     progressTouchStart (e) {
-      this.touch.touchFlag = true
-      this.touch.touchpos = e.touches[0].pageX // 手指点击圆点的时候，圆点位于进度条的位置
-      this.touch.progressWidth = this.$refs.progressDiv.clientWidth // 手指点击圆点的时候，进度条的滚动长度
+      if (this.lyricStyleProgressMove) {
+        this.chooseProgressTouchStart(e, this.lyricSizeTouch)
+      }
+
+      if (this.prossBarBaiFenBi) {
+        this.chooseProgressTouchStart(e, this.touch)
+      }
     },
+    chooseProgressTouchStart(e, progressType) {
+      progressType.touchFlag = true
+      progressType.touchpos = e.touches[0].pageX // 手指点击圆点的时候，圆点位于进度条的位置
+      progressType.progressWidth = this.$refs.progressDiv.clientWidth // 手指点击圆点的时候，进度条的滚动长度
+    },
+
     // 拖动进度条
     progressTouchMove (e) {
-      if (this.touch.touchFlag === false) {
+      if (this.lyricStyleProgressMove) {
+        this.chooseProgressTouchMove(e, this.lyricSizeTouch)
+      }
+      if (this.prossBarBaiFenBi) {
+        this.chooseProgressTouchMove(e, this.touch)
+      }
+    },
+    chooseProgressTouchMove(e, progressType) {
+      if (progressType.touchFlag === false) {
         return
       }
-      let xiaoQiuMoveLen = e.touches[0].pageX - this.touch.touchpos // 小球移动的距离
+      let xiaoQiuMoveLen = e.touches[0].pageX - progressType.touchpos // 小球移动的距离
       const wrapWidth = this.$refs.wrapProgressDiv.clientWidth - 16 // 进度条显示的总长度
       // 进度条需要移动的距离,同时进行了边界的限定
-      let progressMoveLen = Math.min(wrapWidth, Math.max(0, this.touch.progressWidth + xiaoQiuMoveLen))
+      let progressMoveLen = Math.min(wrapWidth, Math.max(0, progressType.progressWidth + xiaoQiuMoveLen))
       // 对小球和滚动条位置变换的css设置
       this.$refs.progressDiv.style.width = `${progressMoveLen}px`
       this.$refs.progressBtn.style.transform = `translate3d(${progressMoveLen}px, 0, 0)`
     },
+
     // 手指移开进度条
     progressTouchEnd (e) {
-      this.touch.touchFlag = false // 不变成false，会导致歌曲播放的时候，进度条总是回弹
+      if (this.lyricStyleProgressMove) {
+        this.chooseProgressTouchEnd(e, this.lyricSizeTouch)
+      }
+
+      if (this.prossBarBaiFenBi) {
+        this.chooseProgressTouchEnd(e, this.touch)
+      }
+    },
+    chooseProgressTouchEnd(e, progressType) {
+      progressType.touchFlag = false // 不变成false，会导致歌曲播放的时候，进度条总是回弹
       // 当前进度条和总进度条的比例
       let showTuoDongAfterTime = this.$refs.progressDiv.clientWidth / (this.$refs.wrapProgressDiv.clientWidth - 16)
+      // console.log(showTuoDongAfterTime)
       this.$emit('progressTouchEnd', showTuoDongAfterTime)
     },
+
     // 点击进度条的某一个位置，播放当前位置的歌曲的对应时间
     clickProgressPossiTion (e) {
+      if (this.lyricStyleProgressMove) {
+        this.chooseClickProgressPossiTion(e, this.lyricSizeTouch)
+      }
+
+      if (this.prossBarBaiFenBi) {
+        this.chooseClickProgressPossiTion(e, this.touch)
+      }
+    },
+    chooseClickProgressPossiTion(e, progressType) {
       // 点击位置和总进度条的比例
-      console.log(e)
+      // console.log(e)
       let rect = this.$refs.wrapProgressDiv.getBoundingClientRect()
       let offsetX = e.pageX - rect.left
       let showTuoDongAfterTime = offsetX / (this.$refs.wrapProgressDiv.clientWidth - 16)
+      // console.log(showTuoDongAfterTime)
       this.$emit('progressTouchEnd', showTuoDongAfterTime)
       // 对小球和滚动条位置变换的css设置
       this.$refs.progressDiv.style.width = `${offsetX}px`
@@ -84,6 +133,15 @@ export default {
         this.$refs.progressBtn.style.transform = `translate3d(${moveLen}px, 0, 0)`
       }
     }
+    // 歌词样式组件传递过来的歌词大小的进度条的值
+    // saveLyricFontSize () {
+    // const allProgressLen = this.$refs.wrapProgressDiv.clientWidth - 16 // 进度条总长度
+    // const showLyricProgressLen = this.saveLyricFontSize / allProgressLen
+    // console.log(showLyricProgressLen)
+    // // 对小球和滚动条位置变换的css设置
+    // this.$refs.progressDiv.style.width = `${showLyricProgressLen}px`
+    // this.$refs.progressBtn.style.transform = `translate3d(${showLyricProgressLen}px, 0, 0)`
+    // }
   }
 }
 </script>

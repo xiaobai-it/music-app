@@ -2,7 +2,8 @@ import {SET_SINNER, SET_PLAYING, SET_FULLSCREEN,
   SET_PLAYLIST, SET_SEQUENCELIST, SET_MODE, SET_CURRENTINDEX,
   SET_HOTGEDANTUIJIANDATAACTIONS, SET_ONETOPLIST,
   SET_SAVESEARCHHISTORYJILU, SET_SAVETHESONGSRECENTLY,
-  SET_SAVECOLLECTIONSONG, SET_DELETECOLLECTIONSONG} from './actions-types'
+  SET_SAVECOLLECTIONSONG, SET_DELETECOLLECTIONSONG,
+  SET_STARTSAVELYRICCOLOR, SET_STARTSAVELYRICPROGRESSLEN} from './actions-types'
 
 const mutations = {
   [SET_SINNER] (state, {singerData}) {
@@ -43,6 +44,12 @@ const mutations = {
   },
   [SET_DELETECOLLECTIONSONG] (state, finalCollectionSongArr) {
     state.saveCollectionOrQuXiaoCollectionSong = finalCollectionSongArr
+  },
+  [SET_STARTSAVELYRICCOLOR] (state, finalSaveCurrentLyricColor) {
+    state.saveLyricColor = finalSaveCurrentLyricColor
+  },
+  [SET_STARTSAVELYRICPROGRESSLEN] (state, finalSaveLyricProgressLen) {
+    state.saveLyricFontSize = finalSaveLyricProgressLen
   }
 }
 export default mutations

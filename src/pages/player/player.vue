@@ -30,7 +30,8 @@
             </div>
             <!--显示部分歌词-->
             <div class="playing-lyric-wrapper" ref="buFenLyric">
-              <div class="playing-lyric" v-if="showBuFenPlayingLyric">
+              <div class="playing-lyric" v-if="showBuFenPlayingLyric" ref="playBufenLyric"
+                   :class="changecurrentLyricColor">
                 {{showBuFenPlayingLyric}}
               </div>
               <!--<div class="playing-lyric" v-else ref="lyriczhengzaijiazai">正在加载歌词...</div>-->
@@ -40,7 +41,9 @@
           <Scroll class="middle-r" :data="currentLyric && currentLyric.lines" ref="lyricList">
             <div class="lyric-wrapper">
               <div v-if="currentLyric">
-                <p class="text" ref="lyricLine" :class="{'current': currentLyricLineNum === index}"
+                <!--<p class="text" ref="lyricLine" :class="{'current': currentLyricLineNum === index}"-->
+                <p class="text" ref="lyricLine"
+                   :class="currentLyricLineNum === index ? changecurrentLyricColor : ''"
                    v-for="(lineLyric, index) in currentLyric.lines" :key="index">
                   {{lineLyric.txt}}
                 </p>
@@ -131,6 +134,7 @@
             <li class="changelyricstylecoloritem"
                 :class="item"
                 v-for="(item, index) in lyricStylecolorArr " :key="index"
+                ref="changelyricstylecoloritem"
                 @click="startchangelyriccolor(index)"></li>
           </ul>
         </div>
@@ -138,7 +142,12 @@
           <span class="left-desc">字体</span>
           <div class="fontsize-progress-bar-wrapper right-style">
             <span class="left-font-size-change">T-</span>
-            <div class="fontsize-progress-bar"></div>
+            <div class="progress-bar-wrapper">
+              <!--ProgressBar组件-->
+              <ProgressBar :lyricStyleProgressMove="lyricStyleProgressMove"
+                           @progressTouchEnd="lyricprogressTouchEnd"
+                           :saveLyricFontSize="saveLyricFontSize[0]" />
+            </div>
             <span class="right-font-size-change">T+</span>
           </div>
         </div>
@@ -187,13 +196,15 @@ export default {
       showBuFenPlayingLyric: '', // 显示部分歌词
       showplaymodetext: '',
       isshowlyricstylecomponent: false, // 是否显示配置歌词样式组件
-      lyricStylecolorArr: ['item1', 'item2', 'item3', 'item4', 'item5', 'item6'] // 设置歌词颜色的默认属性
+      lyricStylecolorArr: ['item1', 'item2', 'item3', 'item4', 'item5', 'item6'], // 设置歌词颜色的默认属性
+      lyricStyleProgressMove: true // 标记歌词样式组件内的进度条的拖动，改变字体大小
     }
   },
   computed: {
     ...mapState(['fullScreen', 'playList',
       'sequenceList', 'playing',
-      'currentIndex', 'mode', 'saveCollectionOrQuXiaoCollectionSong']),
+      'currentIndex', 'mode', 'saveCollectionOrQuXiaoCollectionSong',
+      'saveLyricColor', 'saveLyricFontSize', 'saveLyricFontSize']),
     ...mapGetters(['currentSong']),
     // 改变播放模式
     changePalyMode () {
@@ -217,16 +228,40 @@ export default {
     // 进度条的显示进度
     prossBarBaiFenBi () {
       return this.currentTime / this.currentSong.duration
+    },
+    // 改变正在播放歌词的颜色
+    changecurrentLyricColor() {
+      if (this.saveLyricColor[0].index === 0) {
+        return 'current1'
+      } else if (this.saveLyricColor[0].index === 1) {
+        return 'current2'
+      } else if (this.saveLyricColor[0].index === 2) {
+        return 'current3'
+      } else if (this.saveLyricColor[0].index === 3) {
+        return 'current4'
+      } else if (this.saveLyricColor[0].index === 4) {
+        return 'current5'
+      } else if (this.saveLyricColor[0].index === 5) {
+        return 'current6'
+      } else {
+        return 'current'
+      }
     }
   },
   methods: {
     ...mapActions(['setFullscreen', 'setPlaying',
       'setCurrentindex', 'setMode',
       'setPlaylist', 'saveTheSongsRecently',
-      'saveCollectionSongs', 'deleteCollectionSongs']),
-    // 点击调整歌词样式
+      'saveCollectionSongs', 'deleteCollectionSongs',
+      'startSaveLyricColor', 'startSaveLyricProgressLen']),
+    // 点击显示歌词样式组件
     clickchangelyricstyle() {
       this.isshowlyricstylecomponent = true
+      // 显示歌词样式组件中歌词对应的方框的文字
+      const index = this.saveLyricColor[0].index
+      setTimeout(() => {
+        this.$refs.changelyricstylecoloritem[index].innerHTML = this.saveLyricColor[0].text
+      }, 20)
     },
     // 点击隐藏歌词样式组件
     hideenlyricstylecomponent () {
@@ -234,7 +269,54 @@ export default {
     },
     // 点击开始改变歌词的背景色
     startchangelyriccolor(index) {
-      console.log(index)
+      switch (index) {
+        case 0:
+          this.showOrHideenChooseText(0)
+          break
+        case 1:
+          this.showOrHideenChooseText(1)
+          break
+        case 2:
+          this.showOrHideenChooseText(2)
+          break
+        case 3:
+          this.showOrHideenChooseText(3)
+          break
+        case 4:
+          this.showOrHideenChooseText(4)
+          break
+        case 5:
+          this.showOrHideenChooseText(5)
+          break
+        default:
+          return ''
+      }
+    },
+    // 显示或者隐藏选择颜色对应的文字，上面的startchangelyriccolor()调用
+    showOrHideenChooseText (index) {
+      for (var i = 0; i < this.$refs.changelyricstylecoloritem.length; i++) {
+        if (i === index) {
+          this.$refs.changelyricstylecoloritem[index].innerHTML = '已选'
+          // 把选择的歌词颜色保存到本地缓存中
+          this.startSaveLyricColor({index, text: '已选'})
+        } else {
+          this.$refs.changelyricstylecoloritem[i].innerHTML = ''
+        }
+      }
+    },
+    // 改变歌词样式组件内的滚动条位置，调整歌词大小，滚动结束的时候
+    lyricprogressTouchEnd(showTuoDongAfterTime) {
+      let size = showTuoDongAfterTime * 5 + 15
+      let finalLyricSize = Math.round(size * 10) / 10 // 对小数取值，只保留小数点后一位，不需要四舍五入
+
+      // 把改变歌词大小的进度条的长度保存到本地缓存中
+      this.startSaveLyricProgressLen(finalLyricSize)
+
+      // 改变全屏歌词个部分歌词的大小 还存在问题，进度条不对应，重新刷新后，歌词大小不对？？？？？？？？？
+      this.$refs.lyricLine.forEach((item) => {
+        item.style.fontSize = `${this.saveLyricFontSize[0]}px`
+      })
+      this.$refs.playBufenLyric.style.fontSize = `${this.saveLyricFontSize[0]}px`
     },
     // 显示迷你播放器的播放列表
     showMiniPlaylist () {
@@ -677,22 +759,28 @@ export default {
               margin-left: 20px
               width: 30px
               height: 30px
+              font-size: 12px
+              line-height: 30px
+              text-align: center
+              color: $choose-paly-lyric-textColor-black
             .item1
-              background: orange
+              background: $current-paly-lyric-color-orange
             .item2
-              background: yellow
+              background: $current-paly-lyric-color-yellow
             .item3
-              background: green
+              background: $current-paly-lyric-color-green
             .item4
-              background: blueviolet
+              background: $current-paly-lyric-color-purple
             .item5
-              background: pink
+              background: $current-paly-lyric-color-pink
             .item6
-              background: red
+              background: $current-paly-lyric-color-red
           .fontsize-progress-bar-wrapper
             display: flex
             justify-content: center
             align-items: center
+            .progress-bar-wrapper
+              flex: 1
             .fontsize-progress-bar
               width: 100%
               height: 5px
@@ -814,7 +902,20 @@ export default {
               height: 20px
               line-height: 20px
               font-size: $font-size-medium
-              color: $lyric-color-text
+              &.current
+                color: $current-paly-lyric-color-white
+              &.current1
+                color: $current-paly-lyric-color-orange
+              &.current2
+                color: $current-paly-lyric-color-yellow
+              &.current3
+                color: $current-paly-lyric-color-green
+              &.current4
+                color: $current-paly-lyric-color-purple
+              &.current5
+                color: $current-paly-lyric-color-pink
+              &.current6
+                color: $current-paly-lyric-color-red
         .middle-r
           display: inline-block
           vertical-align: top
@@ -831,7 +932,19 @@ export default {
               color: $color-text-l
               font-size: $font-size-medium
               &.current
-                color: $lyric-color-text
+                color: $current-paly-lyric-color-white
+              &.current1
+                color: $current-paly-lyric-color-orange
+              &.current2
+                color: $current-paly-lyric-color-yellow
+              &.current3
+                color: $current-paly-lyric-color-green
+              &.current4
+                color: $current-paly-lyric-color-purple
+              &.current5
+                color: $current-paly-lyric-color-pink
+              &.current6
+                color: $current-paly-lyric-color-red
       .bottom
         position: absolute
         bottom: 50px

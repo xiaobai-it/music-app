@@ -2,12 +2,14 @@ import {SET_SINNER, SET_PLAYING, SET_FULLSCREEN,
   SET_PLAYLIST, SET_SEQUENCELIST, SET_CURRENTINDEX, SET_MODE,
   SET_HOTGEDANTUIJIANDATAACTIONS, SET_ONETOPLIST,
   SET_SAVESEARCHHISTORYJILU, SET_SAVETHESONGSRECENTLY,
-  SET_SAVECOLLECTIONSONG, SET_DELETECOLLECTIONSONG} from './actions-types'
+  SET_SAVECOLLECTIONSONG, SET_DELETECOLLECTIONSONG,
+  SET_STARTSAVELYRICCOLOR, SET_STARTSAVELYRICPROGRESSLEN} from './actions-types'
 import {playMode} from '../common/js/playModeConfig'
 import {songsRandomPaiXu} from '../common/js/songsRandomPaiXu'
 import {saveSearchHistory, deleteOneSearchHistoryJiLU,
   deleteAllSearchHistoryJiLU, savePlaySongsRecently,
-  saveCollectionSong, deleteCollectionSong} from '../common/js/all-search-history'
+  saveCollectionSong, deleteCollectionSong,
+  saveCurrentLyricColor, saveLyricProgressLen} from '../common/js/all-search-history'
 
 const actions = {
   setSinger ({commit, state}, singerData) {
@@ -188,6 +190,16 @@ const actions = {
   deleteCollectionSongs({commit, state}, currentSong) {
     let finalCollectionSongArr = deleteCollectionSong(currentSong)
     commit(SET_DELETECOLLECTIONSONG, finalCollectionSongArr)
+  },
+  // 保存当前播放歌词的颜色的索引
+  startSaveLyricColor({commit, state}, {index, text}) {
+    let finalSaveCurrentLyricColor = saveCurrentLyricColor({index, text})
+    commit(SET_STARTSAVELYRICCOLOR, finalSaveCurrentLyricColor)
+  },
+  // 保存改变歌词大小的进度条的长度
+  startSaveLyricProgressLen({commit, state}, finalLyricSize) {
+    let finalSaveLyricProgressLen = saveLyricProgressLen(finalLyricSize)
+    commit(SET_STARTSAVELYRICPROGRESSLEN, finalSaveLyricProgressLen)
   }
 }
 export default actions

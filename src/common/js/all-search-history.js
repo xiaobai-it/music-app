@@ -125,3 +125,43 @@ export function getCollectionSong(currentSong) {
   // 获取本地缓存的值
   return goodStoroge.get('collectionSong', [])
 }
+// 保存当前播放歌词的颜色的索引
+export function saveCurrentLyricColor({index, text}) {
+  // 获取本地缓存的值
+  let finalSearch = goodStoroge.get('currentLyricColor', [])
+
+  if (finalSearch.length > 0) {
+    finalSearch.splice(0, 1)
+  }
+
+  finalSearch.push({index, text})
+  // 把最新的搜索记录保存到本地缓存的mySearchHistory数组中
+  goodStoroge.set('currentLyricColor', finalSearch)
+
+  return finalSearch // 返回是搜索记录的数组
+}
+// 初始化的时候vuex中获取当前播放歌词的颜色的索引
+export function getCurrentLyricColor() {
+  // 获取本地缓存的值
+  return goodStoroge.get('currentLyricColor', [])
+}
+// 保存改变歌词大小的进度条的长度的数值
+export function saveLyricProgressLen(finalLyricSize) {
+  // 获取本地缓存的值
+  let finalSearch = goodStoroge.get('LyricProgressLen', [])
+
+  if (finalSearch.length > 0) {
+    finalSearch.splice(0, 1)
+  }
+
+  finalSearch.push(finalLyricSize)
+  // 把最新的搜索记录保存到本地缓存的mySearchHistory数组中
+  goodStoroge.set('LyricProgressLen', finalSearch)
+
+  return finalSearch // 返回是搜索记录的数组
+}
+// 初始化的时候vuex中获取当前播放歌词的颜色的索引
+export function getLyricProgressLen() {
+  // 获取本地缓存的值
+  return goodStoroge.get('LyricProgressLen', [])
+}
