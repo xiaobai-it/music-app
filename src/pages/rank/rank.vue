@@ -2,22 +2,24 @@
   <div class="rank" ref="rank">
     <!--排行页面、scroll滚动组件-->
     <Scroll class="toplist" :data="topList" ref="scroll">
-      <ul>
-        <li class="item" v-for="(list, index) in topList" :key="index" @click="goToRankDetail(list)">
-          <div class="icon">
-            <img width="100" height="100" v-lazy="list.picUrl"/>
-          </div>
-          <ul class="songlist">
-            <li class="song" v-for="(allSong, index) in list.songList" :key="index">
-              <span>{{index + 1}}.</span>
-              <span>{{allSong.singername}}-{{allSong.songname}}</span>
-            </li>
-          </ul>
-        </li>
-      </ul>
-      <!--显示加载状态的组件-->
-      <div class="loading-container" v-if="!topList.length">
-        <loading></loading>
+      <div>
+        <ul>
+          <li class="item" v-for="(list, index) in topList" :key="index" @click="goToRankDetail(list)">
+            <div class="icon">
+              <img width="100" height="100" v-lazy="list.picUrl"/>
+            </div>
+            <ul class="songlist">
+              <li class="song" v-for="(allSong, index) in list.songList" :key="index">
+                <span>{{index + 1}}.</span>
+                <span>{{allSong.singername}}-{{allSong.songname}}</span>
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <!--显示加载状态的组件-->
+        <div class="loading-container" v-if="!topList.length">
+          <loading></loading>
+        </div>
       </div>
     </Scroll>
     <router-view></router-view>
@@ -124,5 +126,6 @@ export default {
         position: absolute
         width: 100%
         top: 50%
+        margin-top: 70%
         transform: translateY(-50%)
 </style>

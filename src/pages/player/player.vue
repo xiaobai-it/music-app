@@ -91,8 +91,7 @@
         </div>
         <!--歌词样式设置按钮-->
         <div class="changelyricstyle">
-          <i class="icon-next" @click.stop="clickchangelyricstyle"></i>
-          <p class="icon-text-desc">歌词样式</p>
+          <span class="icon-text-desc" @click.stop="clickchangelyricstyle">...</span>
         </div>
       </div>
     </transition>
@@ -143,14 +142,15 @@
         <div class="changelyricstylecolor-wraper changelyricstylecolor-wraper-top">
           <span class="left-desc">字体</span>
           <div class="fontsize-progress-bar-wrapper right-style">
-            <span class="left-font-size-change">T-</span>
+            <span class="left-font-size-change" @click.stop="fontSizeReduce">T-</span>
             <div class="progress-bar-wrapper">
               <!--ProgressBar组件-->
               <ProgressBar :lyricStyleProgressMove="lyricStyleProgressMove"
                            @progressTouchEnd="lyricprogressTouchEnd"
-                           :saveLyricFontSize="this.saveLyricFontSize[0]" ref="changeLyricStyleProgressBar"/>
+                           :saveLyricFontSize="this.saveLyricFontSize[0]"
+                           ref="changeLyricStyleProgressBar"/>
             </div>
-            <span class="right-font-size-change">T+</span>
+            <span class="right-font-size-change" @click.stop="fontSizeIncrease">T+</span>
           </div>
         </div>
         <div class="closelyricstyle" @click="hideenlyricstylecomponent">关闭</div>
@@ -206,7 +206,7 @@ export default {
     ...mapState(['fullScreen', 'playList',
       'sequenceList', 'playing',
       'currentIndex', 'mode', 'saveCollectionOrQuXiaoCollectionSong',
-      'saveLyricColor', 'saveLyricFontSize', 'saveLyricFontSize']),
+      'saveLyricColor', 'saveLyricFontSize']),
     ...mapGetters(['currentSong']),
     // 改变播放模式
     changePalyMode () {
@@ -330,6 +330,49 @@ export default {
 
       // 把改变歌词大小的进度条的长度保存到本地缓存中
       this.startSaveLyricProgressLen(finalLyricSize)
+    },
+    // 点击歌词样式组件内的减少按钮，把歌词字体变大
+    fontSizeIncrease() {
+      const EVERY_TIME_CHANGE = 0.1 // 每次点击的时候，歌词改变的大小
+      const MAX_VALUE = 20 // 每次点击的时候，歌词改变的最大值
+      const MIN_VALUE = 15 // 每次点击的时候，歌词改变的最小值
+      if (!this.saveLyricFontSize.length) {
+        this.startSaveLyricProgressLen(MIN_VALUE + EVERY_TIME_CHANGE)
+      } else {
+        const result = this.saveLyricFontSize[0] + EVERY_TIME_CHANGE
+        if (Math.floor(result) >= MAX_VALUE) {
+          this.startSaveLyricProgressLen(MAX_VALUE)
+          return
+        }
+        this.startSaveLyricProgressLen(result)
+      }
+
+      setTimeout(() => {
+        // progress-bar组件方法的调用，设置调整歌词组件内的进度条的长度和位置
+        this.$refs.changeLyricStyleProgressBar.showProgressCurrentLen()
+        this.$refs.changeLyricStyleProgressBar.showProgressBtnCurrentPosition()
+      }, 20)
+    },
+    // 点击歌词样式组件内的减少按钮，把歌词字体变小
+    fontSizeReduce() {
+      const EVERY_TIME_CHANGE = 0.1 // 每次点击的时候，歌词改变的大小
+      const MIN_VALUE = 15 // 每次点击的时候，歌词改变的最小值
+      if (!this.saveLyricFontSize.length) {
+        return
+      }
+      const result = this.saveLyricFontSize[0] - EVERY_TIME_CHANGE
+
+      if (result <= MIN_VALUE) {
+        this.startSaveLyricProgressLen(MIN_VALUE)
+        return
+      }
+
+      this.startSaveLyricProgressLen(result)
+      setTimeout(() => {
+        // progress-bar组件方法的调用，设置调整歌词组件内的进度条的长度和位置
+        this.$refs.changeLyricStyleProgressBar.showProgressCurrentLen()
+        this.$refs.changeLyricStyleProgressBar.showProgressBtnCurrentPosition()
+      }, 20)
     },
     // 显示迷你播放器的播放列表
     showMiniPlaylist () {
@@ -723,16 +766,6 @@ export default {
   .player
     position :relative
     z-index: 80
-    .changelyricstyle
-      color: $color-theme
-      position:absolute
-      bottom: 22%
-      right: 30px
-      font-size: 30px
-      text-align: center
-      z-index: 160
-      .icon-text-desc
-        font-size: 12px
     .show-lyricstyle-component
       position: fixed
       bottom: 0
@@ -820,6 +853,15 @@ export default {
       bottom: 0
       z-index: 150
       background: $color-background
+      .changelyricstyle
+        color: $color-theme
+        position:absolute
+        bottom: 19%
+        right: 40px
+        z-index: 160
+        .icon-text-desc
+          font-size: 30px
+          font-weight: bold
       .background
         position: absolute
         left: 0

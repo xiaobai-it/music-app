@@ -95,7 +95,7 @@ export default {
   computed: {
     ...mapState(['searchHistoryJiLu', 'fullScreen']),
     shortcut () {
-      console.log(this.searchHistoryJiLu)
+      // console.log(this.searchHistoryJiLu)
       return this.hotKey.concat(this.searchHistoryJiLu)
     }
   },

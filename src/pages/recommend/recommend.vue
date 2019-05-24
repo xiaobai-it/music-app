@@ -4,7 +4,7 @@
     <Scroll :data="GeDanData" class="recommend-content" ref="lunboDiv" >
       <div>
         <!--轮播图,注意要有数据的时候，显示轮播才可以，否则只循环一次到末尾，就停止轮播了-->
-        <div class="slider-wrapper" v-if="lunboImgs.length" >
+        <div class="slider-wrapper" v-if="lunboImgs.length > 0" >
           <swiper :options="swiperOption" ref="mySwiper" class="swiper-container">
             <!-- 轮播图片的个数 -->
             <swiperSlide v-for="(img,index) in lunboImgs" :key="index">
@@ -30,9 +30,9 @@
             </li>
           </ul>
         </div>
-      </div>
-      <div class="loading-container">
-        <Loading title="玩命加载中..." v-if="!GeDanData.length"></Loading>
+        <div class="loading-container">
+          <Loading title="玩命加载中..." v-if="!GeDanData.length"></Loading>
+        </div>
       </div>
     </Scroll>
     <!--推荐页面详情页-->
@@ -62,10 +62,16 @@ export default {
       swiperOption: {
         // 所有的参数同 swiper 官方 api 参数
         loop: true,
-        autoplay: {delay: 2000, disableOnInteraction: false},
+        autoplay: {
+          delay: 2000,
+          disableOnInteraction: false // 滑动不会失效
+        },
         pagination: {el: '.swiper-pagination'},
         preventClicks: false,
-        effect: 'coverflow'
+        effect: 'coverflow',
+        autoplayDisableOnInteraction: false,
+        observer: true, // 修改swiper自己或者子元素的时候，自动初始化swiper
+        observeParents: true // 修改swiper父元素的时候，自动初始化swiper
       },
       lunboImgs: [],
       GeDanData: [],
@@ -109,7 +115,7 @@ export default {
     // 点击推荐页面轮播图，进行跳转
     clickImg (index) {
       const linkUrl = this.lunboImgs[index].linkUrl
-      console.log(linkUrl)
+      // console.log(linkUrl)
       window.location.href = linkUrl
     },
     loadImg() {
@@ -134,6 +140,16 @@ export default {
       const bottom = !this.fullScreen ? '60px' : '0'
       this.$refs.recommend.style.bottom = bottom
       this.$refs.lunboDiv.refresh()
+    },
+    // 解决 vue-awesome-swiper 的轮播，在切换页面后，不能自动轮播的问题
+    $route(newVal) {
+      if (newVal.path !== '/recommend') {
+        console.log(newVal.path)
+        this.swiper.autoplay.stop()
+      } else {
+        console.log(newVal.path)
+        this.swiper.autoplay.start()
+      }
     }
   }
 }
@@ -194,6 +210,6 @@ export default {
       .loading-container
         position: absolute
         width: 100%
-        top: 50%
+        top: 180%
         transform: translateY(-50%)
 </style>

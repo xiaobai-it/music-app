@@ -47,7 +47,12 @@ export default {
     // 调整歌词组件中进度条对应的小圆点的位置,是上面2个方法调用的
     finalshowposition() {
       const moveLen = this.$refs.wrapProgressDiv.clientWidth / 50 // 字体每放大0.1，字体进度条需要移动的距离
-      const finalmoveLen = Math.floor((this.saveLyricFontSize - 15) * moveLen * 10) // 字体进度条最终移动的距离
+      let finalmoveLen
+      if (!this.saveLyricFontSize) {
+        finalmoveLen = 0
+      } else {
+        finalmoveLen = Math.floor((this.saveLyricFontSize - 15) * moveLen * 10) // 字体进度条最终移动的距离
+      }
       // 对小球和滚动条位置变换的css设置
       this.$refs.progressBtn.style.transform = `translate3d(${finalmoveLen}px, 0, 0)`
       this.$refs.progressDiv.style.width = `${finalmoveLen}px`
