@@ -106,16 +106,22 @@ export default {
       let firstTouch = even.touches[0] // 第一个手指移动的位置
       this.touchMouveZuoBiao.y2 = firstTouch.pageY
       // 计算出滑动的距离和一共滑动了几个元素[A-Z]
-      let touchMouveDomCount = Math.floor((this.touchMouveZuoBiao.y1 - this.touchMouveZuoBiao.y2) / 18)
+      let count
+      if (this.touchMouveZuoBiao.y1 - this.touchMouveZuoBiao.y2 < 0) {
+        count = this.touchMouveZuoBiao.y2 - this.touchMouveZuoBiao.y1
+      } else {
+        count = this.touchMouveZuoBiao.y2 - this.touchMouveZuoBiao.y1
+      }
+      let touchMouveDomCount = Math.floor(count / 18)
       // 得到滑动到的最终index
-      let finalIndex = this.touchMouveZuoBiao.startTouchIndex * 1 + Math.abs(touchMouveDomCount)
+      // this.touchMouveZuoBiao.startTouchIndex：是第一次点击的时候，点击的是第几个li标签
+      let finalIndex = this.touchMouveZuoBiao.startTouchIndex * 1 + touchMouveDomCount
       // 解决滑动到顶部、尾部的留白，不触发
       if (finalIndex <= 0) {
         finalIndex = 0
-      } else if (finalIndex > this.listHeight.length - 1) {
+      } else if (finalIndex >= this.listHeight.length - 1) {
         finalIndex = this.listHeight.length - 1
       }
-      console.log(finalIndex)
       // 根据点击的索引值，调用better-scroll自带的scrollToElement方法，让页面200毫秒滚动到对应的位置
       this.$refs.listview.scrollToElement(this.$refs.listGroup[finalIndex], 200)
       this.scrollY = -this.listHeight[finalIndex]

@@ -1,5 +1,5 @@
 <template>
-  <div class="player" v-show="playList.length>0">
+  <div class="player" v-show="playList">
   <!--<div class="player" v-if="playList.length>0">-->
     <!--全屏播放器-->
     <transition name="normal"
@@ -35,14 +35,13 @@
                    :class="changecurrentLyricColor" :style="{fontSize: changeLyricFontSize}">
                 {{showBuFenPlayingLyric}}
               </div>
-              <!--<div class="playing-lyric" v-else ref="lyriczhengzaijiazai">正在加载歌词...</div>-->
+              <div class="playing-lyric" v-else>正在加载歌词...</div>
             </div>
           </div>
           <!--全屏显示歌词,可滚动用scroll组件-->
           <Scroll class="middle-r" :data="currentLyric && currentLyric.lines" ref="lyricList">
             <div class="lyric-wrapper">
-              <div v-if="currentLyric">
-                <!--<p class="text" ref="lyricLine" :class="{'current': currentLyricLineNum === index}"-->
+              <div v-if="currentLyric && showBuFenPlayingLyric">
                 <p class="text" ref="lyricLine"
                    :class="currentLyricLineNum === index ? changecurrentLyricColor : ''"
                    :style="{fontSize: changeLyricFontSize}"
@@ -50,7 +49,8 @@
                   {{lineLyric.txt}}
                 </p>
               </div>
-              <!--<div class="text" v-else ref="lyriczhengzaijiazai">正在加载歌词...</div>-->
+              <!--<div class="showBigPlayLoadText" v-if="!showBuFenPlayingLyric">正在加载歌词...</div>-->
+              <div class="text" v-if="!showBuFenPlayingLyric">正在加载歌词...</div>
             </div>
           </Scroll>
         </div>
@@ -78,7 +78,7 @@
             </div>
             <div class="icon i-center" :class="disableClass" >
               <!--icon-play icon-pause-->
-              <i :class="changePalyImg" @click="togglePlayStatue"></i>
+              <i :class="[changePalyImg, disableClass]"  @click="togglePlayStatue"></i>
             </div>
             <div class="icon i-right" :class="disableClass">
               <i class="icon-next" @click="nextSongs"></i>
@@ -449,6 +449,9 @@ export default {
     },
     // 点击播放按钮的时候，改变vuex中的playing的值
     togglePlayStatue () {
+      if (!this.songReady) {
+        return
+      }
       if (!this.currentSong) {
         return
       }
@@ -509,7 +512,10 @@ export default {
         this.$refs.audio.currentTime = 0
         this.$refs.audio.play()
         // 循环播放，播放完后，歌词位置变成0
-        this.currentLyric.seek(0)
+        if (this.currentLyric) {
+          this.currentLyric.seek(0)
+        }
+        // this.currentLyric.seek(0)
       } else {
         this.nextSongs()
       }
@@ -517,6 +523,7 @@ export default {
     // 歌曲已经准备好，可以播放了
     audioCanPlay () {
       this.songReady = true
+
       // 把点击的歌曲保存到【最近播放】的组件中
       this.saveTheSongsRecently(this.currentSong)
     },
@@ -728,13 +735,17 @@ export default {
               this.currentLyric = new Lyric(formatLyric, this.handlerLyric)
 
               // 解决连续点击歌曲，出现歌词混乱的回滚问题
-              if (this.currentLyric) {
-                this.$refs.audio.play() // 播放器开始播放
+              if (this.currentLyric && this.playing) {
+                setTimeout(() => {
+                  this.$refs.audio.play() // 播放器开始播放
+                }, 5)
               }
 
-              if (this.playing) {
+              if (this.playing && this.currentLyric) {
                 console.log('歌曲开始播放了，可以播放歌词了')
-                this.currentLyric.play() // play()是第三方库lyric-parser提供的方法,播放歌词用的
+                setTimeout(() => {
+                  this.currentLyric.play() // play()是第三方库lyric-parser提供的方法,播放歌词用的
+                }, 5)
               }
             }
           })

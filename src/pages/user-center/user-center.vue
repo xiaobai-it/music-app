@@ -13,20 +13,30 @@
         <span class="text">随机播放全部</span>
       </div>
       <div class="list-wrapper">
-        <Scroll class="list-scroll" :data="saveCollectionOrQuXiaoCollectionSong" ref="ilikedivflag">
+        <Scroll class="list-scroll"
+                :data="saveCollectionOrQuXiaoCollectionSong"
+                ref="ilikedivflag">
           <div class="list-inner">
             <!--我收藏的组件-->
             <!--收藏歌曲的组件-->
-            <SongList :musicData="saveCollectionOrQuXiaoCollectionSong" @clickOneSong="clickOneSong"/>
-            <NoResult class="topjuli" v-show="!saveCollectionOrQuXiaoCollectionSong.length" title="您还没有收藏过任何歌曲"/>
+            <SongList
+              v-if="saveCollectionOrQuXiaoCollectionSong.length > 0 && saveCollectionOrQuXiaoCollectionSong !== undefined"
+              :musicData="saveCollectionOrQuXiaoCollectionSong"
+              @clickOneSong="clickOneSong"/>
+            <NoResult v-else class="topjuli" title="您还没有收藏过任何歌曲"/>
           </div>
         </Scroll>
-        <Scroll class="list-scroll" :data="savePlaySongsRecently" ref="ilistionrecentlyflag">
+        <Scroll class="list-scroll"
+                :data="savePlaySongsRecently"
+                ref="ilistionrecentlyflag">
           <div class="list-inner">
             <!--我最近听的组件-->
             <!--最近播放的歌曲的组件,歌曲列表组件-->
-            <SongList :musicData="savePlaySongsRecently" @clickOneSong="clickOneSong"/>
-            <NoResult class="topjuli" v-show="!savePlaySongsRecently.length" title="您还没有播放过任何歌曲"/>
+            <SongList
+              v-if="savePlaySongsRecently.length > 0 && savePlaySongsRecently !== undefined"
+              :musicData="savePlaySongsRecently"
+              @clickOneSong="clickOneSong"/>
+            <NoResult v-else class="topjuli" title="您还没有播放过任何歌曲"/>
           </div>
         </Scroll>
       </div>
@@ -54,6 +64,13 @@ export default {
       switches: [{name: '我收藏的'}, {name: '最近听的'}]
     }
   },
+  mounted () {
+    if (this.currentIndex === 0) {
+      this.$refs.ilikedivflag.$el.style.display = 'block'
+      this.$refs.ilistionrecentlyflag.$el.style.display = 'none'
+      this.$refs.ilikedivflag.refresh()
+    }
+  },
   computed: {
     ...mapState(['savePlaySongsRecently', 'saveCollectionOrQuXiaoCollectionSong'])
   },
@@ -77,7 +94,7 @@ export default {
       // if (index !== 0) {
       this.searchResultClickOneSongInsertAndToPlayPage(item)
       // topalert组件的方法
-      this.$refs.topalert.show()
+      // this.$refs.topalert.show()
       // }
     },
     // 点击随机播放按钮，随机播放当前组件内的歌曲,并且大播放器界面显示出来

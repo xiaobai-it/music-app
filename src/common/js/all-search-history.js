@@ -121,7 +121,7 @@ export function deleteCollectionSong(currentSong) {
   return finalSearch // 返回是搜索记录的数组
 }
 // 初始化的时候vuex中获取收藏的歌曲
-export function getCollectionSong(currentSong) {
+export function getCollectionSong() {
   // 获取本地缓存的值
   return goodStoroge.get('collectionSong', [])
 }

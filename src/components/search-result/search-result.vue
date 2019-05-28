@@ -4,7 +4,7 @@
           @scrollToBottomLoadingMore="scrollToBottomLoadingMore"
           :isSearchResultMove="isSearchResultMove"
           @myBeforeScrollStart="myBeforeScrollStart">
-    <ul class="suggest-list">
+    <ul class="suggest-list" v-show="result.length > 0 && result !== undefined">
       <li class="suggest-item" v-for="(item, index) in result"  :key="index" @click="goToSingerDetailOrPlaySong(item)">
         <div class="icon">
           <i :class="showIconCls(item)" ></i>
@@ -18,7 +18,7 @@
         ------ 亲,这回真的到底了哦! ------
       </span>
     </ul>
-    <Loading class="searchLoading" title="玩命加载中..." v-show="result.length === 0" ref="loading"/>
+    <Loading class="searchLoading" title="玩命加载中..." v-show="result.length === 0 && result !== undefined" ref="loading"/>
     <div class="no-result-wrapper" v-show="!LoadingMore && result.length === 0">
       <!--搜索不到任何数据的时候，显示的组件no-reslt-->
       <noResult title="抱歉，暂无搜索结果"/>
@@ -152,19 +152,17 @@ export default {
     // 同时把点击的值，保存在vuex中的searchHistoryJiLu中，然后在历史组件中显示出来搜索记录
     goToSingerDetailOrPlaySong (item) {
       if (item.type === 'singer') {
-        // 跳转到歌手详情页
-        this.$router.push(`/search/detail/${item.singermid}`)
+        console.log('跳转到歌手详情页面')
         // vuex中state中的singer对象，需要的数据是avatar、id、name所以这里传递的属性名需要一致
         const singerObj = {}
         singerObj.avatar = `https://y.gtimg.cn/music/photo_new/T001R150x150M000${item.singermid}.jpg?max_age=2592000`
         singerObj.id = item.singermid
         singerObj.name = item.singername
         this.setSinger(singerObj)
-        // console.log(singerObj)
-        // console.log('跳转到歌手详情页')
+        // 跳转到歌手详情页
+        this.$router.push(`/search/detail/${item.singermid}`)
       } else {
         // 跳转到播放器页面
-        // console.log(item)
         // 把传入的数据调整为：album duration id image mid name singer url
         const oneSongerObj = {}
         oneSongerObj.album = item.albumname
@@ -185,7 +183,6 @@ export default {
         }).catch((err) => {
           console.log(err)
         })
-        // console.log(oneSongerObj)
         // 想vuex中的playlist和sequenceList数组中，插入点击的歌曲
         this.searchResultClickOneSongInsertAndToPlayPage(oneSongerObj)
       }

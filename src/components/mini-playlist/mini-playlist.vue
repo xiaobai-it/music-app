@@ -174,7 +174,7 @@ export default {
       })
       // 滚动到对应的li标签
       let li = this.$refs.currentPlaysongBiaoQian[currentSongIndex]
-      this.$refs.listContent.scrollToElement(li, 500)
+      this.$refs.listContent.scrollToElement(li, 400)
     },
     // 让正在播放的歌曲的li，滚动到顶部
     playingSongDeLi(currentSong) {
@@ -183,7 +183,7 @@ export default {
         return item.id === currentSong.id
       })
       // 滚动到对应的li标签
-      let li = this.$refs.currentPlaysongBiaoQian[currentSongIndex - 14]
+      let li = this.$refs.currentPlaysongBiaoQian[currentSongIndex - 16]
       this.$refs.listContent.scrollToElement(li, 500)
     },
     // 点击收藏或者取消收藏歌曲
@@ -214,7 +214,7 @@ export default {
       if (newSong.id === oldSong.id || !this.showMiniPlayList) {
         return
       }
-      this.playingSongDeLi2(newSong)
+      this.playingSongDeLi(newSong)
     }
   }
 }

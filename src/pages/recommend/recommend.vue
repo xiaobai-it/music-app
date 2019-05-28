@@ -144,10 +144,8 @@ export default {
     // 解决 vue-awesome-swiper 的轮播，在切换页面后，不能自动轮播的问题
     $route(newVal) {
       if (newVal.path !== '/recommend') {
-        console.log(newVal.path)
         this.swiper.autoplay.stop()
       } else {
-        console.log(newVal.path)
         this.swiper.autoplay.start()
       }
     }

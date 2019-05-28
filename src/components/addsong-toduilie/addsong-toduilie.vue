@@ -1,6 +1,6 @@
 <template>
   <transition name="slide">
-    <div class="add-song" v-show="showComponent" @click.stop >
+    <div class="add-song" v-if="showComponent" @click.stop >
       <div class="header">
         <h1 class="title">添加歌曲到列表</h1>
         <div class="close" @click.stop="hide">
@@ -13,7 +13,7 @@
       </div>
       <div class="shortcut" ref="isshowshortcut">
         <!--2个大按钮组件-->
-        <Switches v-show="!showSearchResult" :switches="switches" :currentIndex="currentIndex" @switch="switchItem"/>
+        <Switches v-show="!showSearchResult || showSearchResult === '' " :switches="switches" :currentIndex="currentIndex" @switch="switchItem"/>
         <div class="list-wrapper">
           <Scroll class="list-scroll"
                   v-if="currentIndex === 0"
@@ -21,7 +21,7 @@
             <div class="list-inner">
               <!--最近播放的歌曲的组件,歌曲列表组件-->
               <SongList :musicData="savePlaySongsRecently" @clickOneSong="clickOneSong"/>
-              <span v-show="!savePlaySongsRecently.length">您还没有播放过任何歌曲</span>
+              <span v-show="!savePlaySongsRecently.length || savePlaySongsRecently === undefined">您还没有播放过任何歌曲</span>
             </div>
           </Scroll>
           <Scroll :data="searchHistoryJiLu" class="list-scroll"

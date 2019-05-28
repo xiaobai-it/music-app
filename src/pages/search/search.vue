@@ -5,23 +5,21 @@
       <!--搜索框组件-->
       <Searchkuang ref="searchkuang" @queryValue="queryValue"/>
     </div>
-    <div class="shortcut-wrapper" v-show="!showSearchResult" ref="shortcutWrapper">
+    <div class="shortcut-wrapper" v-show="!showSearchResult || showSearchResult === ''" ref="shortcutWrapper">
       <Scroll class="shortcut" :data="shortcut" :sleepRefresh="sleepRefresh" ref="shortcut">
         <div>
           <div class="hot-key">
             <h1 class="title">热门搜索</h1>
-            <ul v-show="hotKey">
+            <ul v-if="hotKey">
               <li class="item" v-for="(item, index) in hotKey" :key="index" @click="andSearchToInput(item.k)">
                 <span>{{item.k}}</span>
               </li>
             </ul>
           </div>
-          <!--<div class="search-history" v-show="searchHistoryJiLu.length > 0">-->
-          <div class="search-history" v-show="searchHistoryJiLu.length">
-          <!--<div class="search-history" v-if="searchHistoryJiLu">-->
+          <div class="search-history" v-if="searchHistoryJiLu.length > 0  && searchHistoryJiLu !== undefined ">
             <h1 class="title">
               <span class="text">
-                搜索历史 {{searchHistoryJiLu.length > 0 ? searchHistoryJiLu.length : '0'}} / 20
+                搜索历史 {{searchHistoryJiLu.length > 0 && searchHistoryJiLu !== undefined ? searchHistoryJiLu.length : '0'}} / 20
               </span>
               <span class="clear" @click.stop="deleteAllSearchHistory">
                 <i class="icon-clear"></i>
@@ -35,7 +33,7 @@
         </div>
       </Scroll>
     </div>
-    <div class="search-result" ref="searchResult">
+    <div class="search-result" v-show="showSearchResult && showSearchResult !== ''" ref="searchResult">
       <!--显示搜索结果的组件-->
       <SearchResult :showSearchResult="showSearchResult"
                     @myBeforeScrollStart="myBeforeScrollStart"
@@ -79,8 +77,10 @@ export default {
       setTimeout(() => {
         // 搜索首页距离mini播放器60px
         const bottom = !this.fullScreen ? '60px' : '0'
-        this.$refs.shortcutWrapper.style.bottom = bottom
-        this.$refs.shortcut.refresh()
+        if (this.$refs.shortcutWrapper) {
+          this.$refs.shortcutWrapper.style.bottom = bottom
+          this.$refs.shortcut.refresh()
+        }
       }, 20)
     })
     // 获取搜索首页下的热门搜索内的后台数据的函数
@@ -143,17 +143,30 @@ export default {
     fullScreen () {
       // 搜索首页距离mini播放器60px
       const bottom = !this.fullScreen ? '60px' : '0'
-      this.$refs.shortcutWrapper.style.bottom = bottom
-      this.$refs.shortcut.refresh()
-      // 搜索结果页面距离mini播放器60px
-      this.$refs.searchResult.style.bottom = bottom
-      this.$refs.SearchResult.myRefresh()
+      setTimeout(() => {
+        if (this.$refs.shortcutWrapper) {
+          this.$refs.shortcutWrapper.style.bottom = bottom
+          this.$refs.shortcut.refresh()
+        }
+        // 搜索结果页面距离mini播放器60px
+        if (this.$refs.searchResult) {
+          this.$refs.searchResult.style.bottom = bottom
+          this.$refs.SearchResult.myRefresh()
+        }
+      }, 20)
     },
     // 第一次mini播放器出来的时候，界面不能滚动的处理办法
     showSearchResult (newValue) {
       if (!newValue) {
         setTimeout(() => {
+          this.$refs.shortcutWrapper.style.display = 'block'
+          this.$refs.searchResult.style.display = 'none'
           this.$refs.shortcut.refresh()
+        }, 20)
+      } else {
+        setTimeout(() => {
+          this.$refs.shortcutWrapper.style.display = 'none'
+          this.$refs.searchResult.style.display = 'block'
         }, 20)
       }
     }
