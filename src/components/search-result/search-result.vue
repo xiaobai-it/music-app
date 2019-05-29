@@ -173,7 +173,7 @@ export default {
         oneSongerObj.name = item.songname
         oneSongerObj.singer = this.dealSinger(item.singer)
         // 应该是点击歌曲，点击上一首、点击下一首 的时候在获取对应的歌曲链接，我这里就一次性都获取到了，
-        // 这样做的缺点是小号流量，和用户体验不好，显示加载中的状态有点长,数据更新缓慢
+        // 这样做的缺点是消耗流量，和用户体验不好，显示加载中的状态有点长,数据更新缓慢
         getplaysongvkey(item.songmid).then((response) => {
           // 有的歌曲没有vkey，所以得不到purl。所以自己手动获取filename和testfile2g，然后拼接成歌曲的url
           const purl = response.data.req_0.data.midurlinfo[0].purl

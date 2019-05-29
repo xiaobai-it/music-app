@@ -41,7 +41,7 @@ export default {
     }
     getTuiJianDeatalPageSongs(dissid).then((response) => {
       // console.log(response.data)
-      console.log(response.data.cdlist[0].songlist)
+      // console.log(response.data.cdlist[0].songlist)
       if (response.data.code === 0) {
         const songlist = response.data.cdlist[0].songlist
         // 对songlist进行处理，得到自己需要的数据
@@ -68,7 +68,7 @@ export default {
           // obj.url = ''
           // this.musicData.push(obj)
         })
-        console.log(this.musicData)
+        // console.log(this.musicData)
       }
     }).catch((err) => {
       console.log(err)

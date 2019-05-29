@@ -23,11 +23,11 @@ export default {
   .no-result
     text-align: center
     .no-result-icon
-      width: 110px
-      height: 110px
+      width: 140px
+      height: 140px
       margin: 0 auto
       bg-image('no-result')
-      background-size: 110px 110px
+      background-size: 140px 140px
     .no-result-text
       margin-top: 30px
       font-size: $font-size-medium

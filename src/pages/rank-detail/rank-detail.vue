@@ -30,7 +30,7 @@ export default {
     }
     getTopLstDetail(this.oneTopList.id).then((response) => {
       if (response.code === 0) {
-        console.log(response)
+        // console.log(response)
         const songlist = response.songlist
         // 对songlist进行处理，得到自己需要的数据
         songlist.forEach((item) => {
@@ -54,7 +54,7 @@ export default {
             console.log(err)
           })
         })
-        console.log(this.musicData)
+        // console.log(this.musicData)
       }
     }).catch((err) => {
       console.log(err)

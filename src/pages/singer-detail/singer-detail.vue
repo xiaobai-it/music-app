@@ -31,7 +31,7 @@ export default {
         .then((respose) => {
           if (respose.code === 0) {
             const list = respose.data.list
-            console.log(list)
+            // console.log(list)
             // console.log(list[0]['musicData'].strMediaMid)
 
             // 把后台得到的数据进行处理，得到我自己想要的数据
@@ -62,7 +62,7 @@ export default {
               })
             })
             // console.log(this.singer)
-            console.log(this.musicData)
+            // console.log(this.musicData)
           }
         })
         .catch((err) => {

@@ -16,7 +16,7 @@
               </li>
             </ul>
           </div>
-          <div class="search-history" v-if="searchHistoryJiLu.length > 0  && searchHistoryJiLu !== undefined ">
+          <div class="search-history" v-if="searchHistoryJiLu && searchHistoryJiLu.length > 0  && searchHistoryJiLu !== undefined ">
             <h1 class="title">
               <span class="text">
                 搜索历史 {{searchHistoryJiLu.length > 0 && searchHistoryJiLu !== undefined ? searchHistoryJiLu.length : '0'}} / 20
@@ -116,6 +116,7 @@ export default {
     // 把搜框输入的值，保存在vuex中的searchHistoryJiLu中，然后在历史组件中显示出来搜索记录
     saveSearchHistory() {
       this.saveSearchHistoryJiLU(this.showSearchResult)
+      // showSearchResult
     },
     // 点击某一个搜索记录
     clickOneSearchHistory(item) {

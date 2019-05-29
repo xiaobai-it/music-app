@@ -1,7 +1,7 @@
 <template>
   <!--通用的歌曲列表组件-->
   <div class="song-list">
-    <ul>
+    <ul v-if="musicData && musicData.length > 0 && musicData !== undefined">
       <li class="item" v-for="(item, index) in musicData" :key="index" @click="clickOneSong(item,index)">
         <div class="rank" v-if="rank">
           <span :class="showRankImg(index)" v-if="index < 3"></span>
@@ -33,9 +33,6 @@ export default {
     return {
       message: ''
     }
-  },
-  mounted() {
-    console.log(this.musicData)
   },
   methods: {
     clickOneSong(item, index) {

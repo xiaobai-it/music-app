@@ -733,6 +733,7 @@ export default {
               // 得到的歌词是base64格式的字符串，需要用第三方库js-base64先解码,在用第三方库lyric-parser,格式化歌词
               let formatLyric = Base64.decode(response.data.lyric)
               this.currentLyric = new Lyric(formatLyric, this.handlerLyric)
+              // console.log(this.currentLyric)
 
               // 解决连续点击歌曲，出现歌词混乱的回滚问题
               if (this.currentLyric && this.playing) {
@@ -741,7 +742,7 @@ export default {
                 }, 5)
               }
 
-              if (this.playing && this.currentLyric) {
+              if (this.playing) {
                 console.log('歌曲开始播放了，可以播放歌词了')
                 setTimeout(() => {
                   this.currentLyric.play() // play()是第三方库lyric-parser提供的方法,播放歌词用的

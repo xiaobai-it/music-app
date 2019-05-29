@@ -1,5 +1,5 @@
 <template>
-  <div class="search-list" v-show="searchHistoryJiLu.length > 0 && searchHistoryJiLu !== undefined">
+  <div class="search-list" v-if="searchHistoryJiLu && searchHistoryJiLu.length > 0 && searchHistoryJiLu !== undefined">
   <!--<div class="search-list" v-if="searchHistoryJiLu">-->
     <transition-group name="list" tag="ul">
     <li class="search-item"

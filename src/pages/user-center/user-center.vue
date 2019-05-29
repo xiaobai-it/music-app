@@ -20,7 +20,7 @@
             <!--我收藏的组件-->
             <!--收藏歌曲的组件-->
             <SongList
-              v-if="saveCollectionOrQuXiaoCollectionSong.length > 0 && saveCollectionOrQuXiaoCollectionSong !== undefined"
+              v-if=" saveCollectionOrQuXiaoCollectionSong && saveCollectionOrQuXiaoCollectionSong.length > 0 && saveCollectionOrQuXiaoCollectionSong !== undefined"
               :musicData="saveCollectionOrQuXiaoCollectionSong"
               @clickOneSong="clickOneSong"/>
             <NoResult v-else class="topjuli" title="您还没有收藏过任何歌曲"/>
@@ -61,7 +61,7 @@ export default {
   data() {
     return {
       currentIndex: 0, // 默认大按钮的索引
-      switches: [{name: '我收藏的'}, {name: '最近听的'}]
+      switches: [{name: '我的收藏'}, {name: '最近常听'}]
     }
   },
   mounted () {

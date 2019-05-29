@@ -94,7 +94,7 @@ export default {
     },
     // 跳转到歌手详情页
     goToDetail(singerItem) {
-      console.log(singerItem)
+      // console.log(singerItem)
       this.$router.push(`/singer/detail/${singerItem.id}`)
       this.setSinger(singerItem)
     }

@@ -183,7 +183,7 @@ export default {
         return item.id === currentSong.id
       })
       // 滚动到对应的li标签
-      let li = this.$refs.currentPlaysongBiaoQian[currentSongIndex - 16]
+      let li = this.$refs.currentPlaysongBiaoQian[currentSongIndex - 12]
       this.$refs.listContent.scrollToElement(li, 500)
     },
     // 点击收藏或者取消收藏歌曲
