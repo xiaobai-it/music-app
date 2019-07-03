@@ -28,7 +28,7 @@ export default {
     }, 3500)
   },
   watch: {
-    // 解决 vue-awesome-swiper 的轮播，在切换页面后，不能自动轮播的问题
+    // 监视路由，如果路由是/loading，就自动跳转达到recomend页面
     $route(newVal) {
       if (newVal.path === '/loading') {
         setTimeout(() => {
@@ -41,13 +41,14 @@ export default {
 </script>
 
 <style scoped lang="stylus">
+  @import "../../common/stylus/variable.styl"
   .loading-wrap,.loading-wrap-all
     position: fixed
     top: 0
     left: 0
     width : 100%
     height: 100%
-    background : white
+    background : $color-background
     /*transition: all 5s linear*/
   .loading-wrap-all
     position: relative
@@ -55,13 +56,13 @@ export default {
     .loading-desc
       position :absolute
       width :100%
-      height :10%
-      line-height: 70px
       text-align :center
       font-size :25px
-      color: #000
+      color: $color-theme
       font-weight :bold
       z-index: 10
+      animation : loading-desc-animation 2s
+      animation-fill-mode: forwards
     .loading-img-wrap
       position :absolute
       top: 10%
@@ -77,7 +78,7 @@ export default {
       width : 100%
       height :10%
       text-align : center
-      color: #000
+      color: $color-theme
       font-weight :bold
       .loading-content-wrap
         margin-top :5%
@@ -90,6 +91,10 @@ export default {
           text-align :center
           font-size :$font-size-medium
 
+  @keyframes loading-desc-animation {
+    from {height :0%; line-height : 0px; transform:scale(0)}
+    to {height :10%; line-height: 70px; transform:scale(1)}
+  }
   @keyframes loading-wrap-animation {
     from {opacity: 0}
     to {opacity: 1}
