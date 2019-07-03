@@ -46,6 +46,7 @@ module.exports = {
 
   build: {
     // Template for index.html
+    port: 9000, // 自己配置的打包之后的服务器的端口号
     index: path.resolve(__dirname, '../dist/index.html'),
 
     // Paths
