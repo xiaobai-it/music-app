@@ -1,0 +1,58 @@
+name: Publish And Deploy Demo
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # 下载源码
+      - name: Checkout
+        uses: actions/checkout@master # 将代码拷贝到虚机中
+
+      # 打包构建
+      - name: Build
+        uses: actions/setup-node@master
+      - run: npm install
+      - run: npm run build
+      - run: tar -zcvf release.tgz dist
+      # 把上面npm run build后生成的dist文件夹进行压缩，压缩后的包是release.tgz
+
+      # 发布 Release
+      - name: Create Release # 创建Release，可以在github项目中看到这个创建的Release
+        id: create_release
+        uses: actions/create-release@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN_MUSIC }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false # 是否是草稿
+          prerelease: false # 是否是预发布
+
+      # 上传构建结果到 Release，把前面打包好的release.tgz压缩包上传到我们创建好的Release中
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN_MUSIC }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./release.tgz #要上传的文件
+          asset_name: release.tgz #上传后的文件名字
+          asset_content_type: application/x-tgz
+
+      # 部署到服务器
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }} # 服务器端主机名
+          username: ${{ secrets.USERNAME }} # 服务器端系统登录的用户名
+          password: ${{ secrets.PASSWORD }} # 服务器端系统登录的用密码
+          port: ${{ secrets.PORT }} # 服务器端端口号，下面的script命令是运行在服务端的，自动运行
+          script: |
+            cd /root/tomcat/apache-tomcat-9.0.44/webapps/ROOT
+            wget https://github.com/xiaobai-it/music-app/releases/latest/download/release.tgz -O release.tgz
+            tar zxvf release.tgz
