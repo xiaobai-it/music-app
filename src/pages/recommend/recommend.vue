@@ -103,6 +103,8 @@ export default {
     })
     // 获取热门歌单的数据
     getHotGeDan().then((response) => {
+      console.log('获取热门歌单的数据',response)
+      console.log('获取热门歌单的数据',response.data.data.list)
       if (response.data.code === 0) {
         this.GeDanData = response.data.data.list
       }

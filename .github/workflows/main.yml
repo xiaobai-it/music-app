@@ -53,6 +53,6 @@ jobs:
           password: ${{ secrets.PASSWORD }} # 服务器端系统登录的用密码
           port: ${{ secrets.PORT }} # 服务器端端口号，下面的script命令是运行在服务端的，自动运行
           script: |
-            cd /root/tomcat/apache-tomcat-9.0.44/webapps/ROOT
+            cd /root/nginx/nginx-1.18.0/html
             wget https://github.com/xiaobai-it/music-app/releases/latest/download/release.tgz -O release.tgz
             tar zxvf release.tgz
