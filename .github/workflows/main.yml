@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@master # 将代码拷贝到虚机中
 
       # 打包构建
-      - name: Build
+      - name: Build-dabao
         uses: actions/setup-node@master
       - run: npm install
       - run: npm run build
